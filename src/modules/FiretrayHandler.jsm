@@ -111,11 +111,7 @@ firetray.Handler = {
 
     if (this.inMailApp) {
       try {
-        if (Services.appinfo.version >= 63.0) {
-          Cu.import("resource:///modules/MailServices.jsm");
-        } else {
-          Cu.import("resource:///modules/mailServices.js");
-        }
+        Cu.import("resource:///modules/MailServices.jsm");
         Cu.import("resource://firetray/FiretrayMessaging.jsm");
         if (firetray.Utils.prefService.getBoolPref("mail_notification_enabled")) {
           firetray.Messaging.init();

@@ -8,11 +8,7 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource:///modules/iteratorUtils.jsm");
-if (Services.appinfo.version >= 63.0) {
-  Cu.import("resource:///modules/MailServices.jsm");
-} else {
-  Cu.import("resource:///modules/mailServices.js");
-}
+Cu.import("resource:///modules/MailServices.jsm");
 Cu.import("resource://gre/modules/PluralForm.jsm");
 Cu.import("resource://firetray/commons.js");
 
