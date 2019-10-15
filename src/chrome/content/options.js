@@ -13,8 +13,6 @@ const TREEROW_ACCOUNT_OR_SERVER_TYPE_ORDER    = 2;
 const TREELEVEL_SERVER_TYPES      = 0;
 const TREELEVEL_EXCLUDED_ACCOUNTS = 1;
 
-const PREF_DEFAULT_PANE = "pref-pane-windows";
-
 let log = firetray.Logging.getLogger("firetray.UIOptions");
 
 var firetrayUIOptions = {
@@ -59,7 +57,8 @@ var firetrayUIOptions = {
       Cu.import("resource://firetray/FiretrayMessaging.jsm");
       this.initMailControls();
     } else {
-      this.removePrefPane("pref-pane-mail");
+      document.getElementById("pref-tab-mail").hidden = true;
+      document.getElementById("pref-panel-mail").hidden = true;
     }
 
     if (firetray.Handler.isChatProvided() &&
@@ -68,7 +67,8 @@ var firetrayUIOptions = {
       Cu.import("resource://firetray/"+firetray.Handler.app.OS+"/FiretrayChat.jsm");
       this.initChatControls();
     } else {
-      this.removePrefPane("pref-pane-chat");
+      document.getElementById("pref-tab-chat").hidden = true;
+      document.getElementById("pref-panel-chat").hidden = true;
     };
 
     if (!firetray.Handler.canAppind) {

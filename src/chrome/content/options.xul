@@ -16,13 +16,13 @@
 
   <tabbox selectedIndex="0" flex="1">
     <tabs>
-      <tab><label value="&windows_options;" /></tab>
-      <tab><label value="&icon_options;"/></tab>
-      <tab><label value="&mail_options;" /></tab>
-      <tab><label value="&chat_options;" /></tab>
+      <tab id="pref-tab-windows"><label value="&windows_options;" /></tab>
+      <tab id="pref-tab-icon"><label value="&icon_options;"/></tab>
+      <tab id="pref-tab-mail"><label value="&mail_options;" /></tab>
+      <tab id="pref-tab-chat"><label value="&chat_options;" /></tab>
     </tabs>
     <tabpanels flex="1">
-      <tabpanel orient="vertical">
+      <tabpanel id="pref-panel-windows" orient="vertical">
     
         <vbox pack="start" align="left" flex="1">
         <checkbox id="ui_hides_on_close" preference="extensions.firetray.hides_on_close"
@@ -61,7 +61,7 @@
         </vbox>
 
       </tabpanel>
-      <tabpanel orient="vertical">
+      <tabpanel id="pref-panel-icon" orient="vertical">
 
         <vbox pack="start" align="left" flex="1">
 
@@ -122,7 +122,7 @@
         </vbox>
 
       </tabpanel>
-      <tabpanel orient="vertical">
+      <tabpanel id="pref-panel-mail" orient="vertical">
 
         <vbox align="left" flex="1">
 
@@ -321,7 +321,7 @@
         </vbox>
 
       </tabpanel>
-      <tabpanel orient="vertical">
+      <tabpanel id="pref-panel-chat" orient="vertical">
 
         <vbox align="left" flex="1">
 
