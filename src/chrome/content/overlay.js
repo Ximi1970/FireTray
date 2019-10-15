@@ -24,7 +24,7 @@ var firetrayChrome = { // each new window gets a new firetrayChrome !
     let init = firetray.Handler.initialized || firetray.Handler.init();
 
     firetray_log.debug("ONLOAD");
-    this.winId = firetray.Handler.registerWindow(win);
+//    this.winId = firetray.Handler.registerWindow(win);
 
     win.addEventListener('close', firetrayChrome.onClose, true);
     this.hijackTitlebarButtons();
