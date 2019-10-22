@@ -5,32 +5,7 @@ New releases have been tested with:
 
 Working:
 
-Windows 10 x64, Thunderbird win32 52.9.1 and 60.4.0  
-Windows 10 x64, Thunderbird win64 52.9.1 and 60.4.0  
-openSuSE Leap 15.0, KDE, Thunderbird 52.9.1 and 60.3.0  
-
-Linux Mint 18.3 Sylvia  
-Linux Mint 19 Tara and Thunderbird 60.2.1  
-Devuan ASCII with Thunderbird version 60.2.1 (64-bits)  
-Ubuntu MATE LTS 18.04 AMD64 and Thunderbird 60.2.1  
-Fedora 27, Thunderbird 60.2.1 (64-bit)  
-Debian 9.5 x64 Thunderbird 60.3.0  
-
-Thank you for testing !!!  
-
-Not working:  
-
-(K)ubuntu 16.04, Thunderbird (very small icon with GTK)  
-
-
-
-Not tested:  
-
-SeaMonkey  
-ChatZilla  
-Zotero  
-
-other desktops...  
+None
 
 
 
