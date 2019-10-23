@@ -6,11 +6,9 @@ const APPINDICATOR_LIBNAME = "appindicator3";
 const APPINDICATOR_ABIS    = [ 1 ];
 
 const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
 
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/ctypes/ctypes-utils.jsm");
+var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
 Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
 Cu.import("resource://firetray/ctypes/linux/gtk3/gtk.jsm");
 

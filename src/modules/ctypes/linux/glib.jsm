@@ -5,12 +5,8 @@ var EXPORTED_SYMBOLS = [ "glib" ];
 const GLIB_LIBNAME = "glib-2.0";
 const GLIB_ABIS    = [ 0 ];
 
-const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/ctypes/ctypes-utils.jsm");
+var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
 
 function glib_defines(lib) {
   /* mutual inclusion not possible */

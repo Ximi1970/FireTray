@@ -47,7 +47,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/ctypes/ctypes-utils.jsm");
+var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
 Cu.import("resource://firetray/ctypes/linux/glib.jsm");
 
 function gobject_defines(lib) {
