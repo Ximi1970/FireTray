@@ -9,8 +9,15 @@ const Cu = Components.utils;
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/commons.js");
-Cu.import("resource://firetray/PrefListener.jsm");
+var { firetray,
+      FIRETRAY_PREF_BRANCH,
+      FIRETRAY_OS_SUPPORT,
+      FIRETRAY_APP_DB,
+      FIRETRAY_ACCOUNT_SERVER_TYPE_IM,
+      FIRETRAY_DELAY_STARTUP_MILLISECONDS,
+      FIRETRAY_DELAY_NOWAIT_MILLISECONDS
+    } = ChromeUtils.import("resource://firetray/commons.js");
+var { PrefListener } = ChromeUtils.import("resource://firetray/PrefListener.jsm");
 
 /**
  * firetray namespace.

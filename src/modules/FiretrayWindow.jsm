@@ -3,11 +3,7 @@
 
 var EXPORTED_SYMBOLS = [ "FiretrayWindow" ];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
-
-Cu.import("resource://firetray/commons.js");
+var { firetray } = ChromeUtils.import("resource://firetray/commons.js");
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.FiretrayWindow");

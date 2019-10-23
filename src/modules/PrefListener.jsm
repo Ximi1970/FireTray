@@ -5,7 +5,6 @@ var EXPORTED_SYMBOLS = [ "PrefListener" ];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
 
 
 /**
