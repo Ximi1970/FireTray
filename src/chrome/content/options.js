@@ -13,7 +13,8 @@ const TREEROW_ACCOUNT_OR_SERVER_TYPE_ORDER    = 2;
 const TREELEVEL_SERVER_TYPES      = 0;
 const TREELEVEL_EXCLUDED_ACCOUNTS = 1;
 
-let log = firetray.Logging.getLogger("firetray.UIOptions");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.UIOptions");
 
 var firetrayUIOptions = {
   strings: null,

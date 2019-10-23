@@ -19,7 +19,8 @@ if ("undefined" == typeof(firetray)) {
   var firetray = {};
 };
 
-let log = firetray.Logging.getLogger("firetray.Handler");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.Handler");
 
 /**
  * Singleton object and abstraction for windows and tray icon management.

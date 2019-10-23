@@ -24,7 +24,8 @@ Cu.import("resource://firetray/commons.js");
 Cu.import("resource://firetray/icons.jsm");
 firetray.Handler.subscribeLibsForClosing([gdi32, kernel32, shell32, user32]);
 
-let log = firetray.Logging.getLogger("firetray.StatusIcon");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.StatusIcon");
 
 if ("undefined" == typeof(firetray.Handler))
   log.error("This module MUST be imported from/after FiretrayHandler !");

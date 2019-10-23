@@ -1,67 +1,23 @@
 /* -*- Mode: js2; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 
-var EXPORTED_SYMBOLS = [ "firetray" ];
+var EXPORTED_SYMBOLS = [ "Logging" ];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
-
-Cu.import("resource://gre/modules/Services.jsm");
-
-const FIRETRAY_LOG_LEVEL = "Debug"; // "All" for debugging
-
-const COLOR_NORMAL          = "";
-const COLOR_RESET           = "\0o33[m";
-const COLOR_BOLD            = "\0o33[1m";
-const COLOR_RED             = "\0o33[31m";
-const COLOR_GREEN           = "\0o33[32m";
-const COLOR_YELLOW          = "\0o33[33m";
-const COLOR_BLUE            = "\0o33[34m";
-const COLOR_MAGENTA         = "\0o33[35m";
-const COLOR_CYAN            = "\0o33[36m";
-const COLOR_WHITE           = "\0o33[37m";
-const COLOR_BOLD_RED        = "\0o33[1;31m";
-const COLOR_BOLD_GREEN      = "\0o33[1;32m";
-const COLOR_BOLD_YELLOW     = "\0o33[1;33m";
-const COLOR_BOLD_BLUE       = "\0o33[1;34m";
-const COLOR_BOLD_MAGENTA    = "\0o33[1;35m";
-const COLOR_BOLD_CYAN       = "\0o33[1;36m";
-const COLOR_BG_RED          = "\0o33[41m";
-const COLOR_BG_GREEN        = "\0o33[42m";
-const COLOR_BG_YELLOW       = "\0o33[43m";
-const COLOR_BG_BLUE         = "\0o33[44m";
-const COLOR_BG_MAGENTA      = "\0o33[45m";
-const COLOR_BG_CYAN         = "\0o33[46m";
-
-var colorTermLogColors = {
-  "FATAL":  COLOR_BOLD_RED,
-  "ERROR":  COLOR_RED,
-  "WARN":   COLOR_YELLOW,
-  "INFO":   COLOR_GREEN,
-  "CONFIG": COLOR_MAGENTA,
-  "DEBUG":  COLOR_CYAN,
-  "TRACE":  COLOR_NORMAL,
-  "ALL":    COLOR_NORMAL
-};
-
-if ("undefined" == typeof(firetray)) {
-  var firetray = {};
-};
+const FIRETRAY_LOG_LEVEL = "Debug";
 
 // https://wiki.mozilla.org/Labs/JS_Modules#Logging
-firetray.Logging = {
+var Logging = {
   initialized: false,
   LogMod: null,
 
   init: function() {
     if (this.initialized) return;
 
-    Cu.import("resource://gre/modules/Log.jsm");
+    var { Log } = ChromeUtils.import("resource://gre/modules/Log.jsm");
     this.LogMod = Log
     
-    this.setupLogging("firetray");
+    this.setupLogging("firetray2");
 
-    let log = this.getLogger("firetray.Logging");
+    let log = this.getLogger("firetray2.Logging");
     log.debug("initialized");
 
     this.initialized = true;
@@ -90,6 +46,4 @@ firetray.Logging = {
     return this.LogMod.repository.getLogger(loggerName);
   }
 
-};                              // firetray.Logging
-
-firetray.Logging.init();
+};  // Logging

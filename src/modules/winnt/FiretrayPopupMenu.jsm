@@ -14,7 +14,8 @@ Cu.import("resource://firetray/ctypes/winnt/user32.jsm");
 Cu.import("resource://firetray/commons.js");
 firetray.Handler.subscribeLibsForClosing([user32]);
 
-let log = firetray.Logging.getLogger("firetray.PopupMenu");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.PopupMenu");
 
 if ("undefined" == typeof(firetray.StatusIcon))
   log.error("This module MUST be imported from/after StatusIcon !");

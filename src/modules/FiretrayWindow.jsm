@@ -9,7 +9,8 @@ const Cu = Components.utils;
 
 Cu.import("resource://firetray/commons.js");
 
-let log = firetray.Logging.getLogger("firetray.FiretrayWindow");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.FiretrayWindow");
 
 if ("undefined" == typeof(firetray.Handler))
   log.error("This module MUST be imported from/after FiretrayHandler !");

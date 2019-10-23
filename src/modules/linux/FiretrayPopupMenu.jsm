@@ -14,7 +14,8 @@ Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
 Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
 firetray.Handler.subscribeLibsForClosing([gobject, gtk]);
 
-let log = firetray.Logging.getLogger("firetray.PopupMenu");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.PopupMenu");
 
 if ("undefined" == typeof(firetray.StatusIcon))
   log.error("This module MUST be imported from/after StatusIcon !");

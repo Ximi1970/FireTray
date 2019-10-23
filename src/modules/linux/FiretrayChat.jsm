@@ -11,7 +11,9 @@ Cu.import("resource://firetray/commons.js");
 Cu.import("resource://firetray/linux/FiretrayChatStatusIcon.jsm");
 Cu.import("resource://firetray/linux/FiretrayWindow.jsm");
 
-let log = firetray.Logging.getLogger("firetray.Chat");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.Chat");
+
 
 firetray.Chat = {
   initialized: false,

@@ -19,10 +19,12 @@ Cu.import("resource://firetray/linux/FiretrayGtkIcons.jsm");
 Cu.import("resource://firetray/linux/FiretrayWindow.jsm");
 firetray.Handler.subscribeLibsForClosing([gdk, gio, gobject, gtk]);
 
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.ChatStatusIcon");
+
 if ("undefined" == typeof(firetray.Handler))
   log.error("This module MUST be imported from/after FiretrayHandler !");
 
-let log = firetray.Logging.getLogger("firetray.ChatStatusIcon");
 
 const ALPHA_STEP                       = 5;
 const ALPHA_STEP_SLEEP_MILLISECONDS    = 10;

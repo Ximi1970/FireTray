@@ -21,7 +21,8 @@ Cu.import("resource://firetray/ctypes/linux/pango.jsm");
 Cu.import("resource://firetray/ctypes/linux/pangocairo.jsm");
 firetray.Handler.subscribeLibsForClosing([gobject, gdk, gtk, cairo, pango, pangocairo]);
 
-let log = firetray.Logging.getLogger("firetray.AppIndicator");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.AppIndicator");
 
 if ("undefined" == typeof(firetray.StatusIcon))
   log.error("This module MUST be imported from/after FiretrayStatusIcon !");

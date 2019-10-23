@@ -13,7 +13,8 @@ Cu.import("resource://firetray/ctypes/winnt/user32.jsm");
 Cu.import("resource://firetray/commons.js");
 firetray.Handler.subscribeLibsForClosing([kernel32, user32]);
 
-let log = firetray.Logging.getLogger("firetray.Win32");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.Win32");
 
 const kMessageTray     = "_FIRETRAY_Tray";
 

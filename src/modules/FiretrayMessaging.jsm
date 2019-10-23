@@ -25,7 +25,8 @@ const FLDRS_UNINTERESTING = {
 
 const ACCOUNTS_PREF_BRANCH = "mail.accountmanager.accounts";
 
-let log = firetray.Logging.getLogger("firetray.Messaging");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.Messaging");
 
 
 firetray.Messaging = {

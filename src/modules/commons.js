@@ -23,7 +23,6 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://firetray/logging.jsm");
 
 const FIRETRAY_VERSION     = "0.7.0pre1"; // needed for sync call of onVersionChange() :(
 const FIRETRAY_OS_SUPPORT  = ['freebsd', 'linux', 'winnt']; // install.rdf sync :(
@@ -120,7 +119,8 @@ if ("undefined" == typeof(firetray)) {
   var firetray = {};
 };
 
-let log = firetray.Logging.getLogger("firetray.commons");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.commons");
 
 firetray.Utils = {
   prefService: Services.prefs.getBranch(FIRETRAY_PREF_BRANCH),

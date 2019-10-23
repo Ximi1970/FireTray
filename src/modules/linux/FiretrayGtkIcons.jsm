@@ -10,10 +10,11 @@ Cu.import("resource://firetray/commons.js"); // first for Handler.app !
 Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
 firetray.Handler.subscribeLibsForClosing([gtk]);
 
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.GtkIcons");
+
 if ("undefined" == typeof(firetray.StatusIcon))
   log.error("This module MUST be imported from/after StatusIcon !");
-
-let log = firetray.Logging.getLogger("firetray.GtkIcons");
 
 
 firetray.GtkIcons = {
@@ -41,7 +42,7 @@ firetray.GtkIcons = {
     let gtkIconTheme = gtk.gtk_icon_theme_get_default();
     log.debug("gtkIconTheme="+gtkIconTheme);
 
-    if (log.level <= firetray.Logging.LogMod.Level.Debug) {
+    if (log.level <= Logging.LogMod.Level.Debug) {
       Cu.import("resource://firetray/ctypes/linux/glib.jsm");
       Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
       firetray.Handler.subscribeLibsForClosing([glib, gobject]);

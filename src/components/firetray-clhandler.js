@@ -5,10 +5,10 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://firetray/logging.jsm");
 Cu.import("resource://firetray/FiretrayHandler.jsm");
 
-let log = firetray.Logging.getLogger("firetray.clhandler");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.clhandler");
 
 function firetayCommandLineHandler() {}
 firetayCommandLineHandler.prototype = {

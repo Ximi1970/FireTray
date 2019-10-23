@@ -7,12 +7,12 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/logging.jsm");
 Cu.import("resource://firetray/commons.js");
 
 const FIRETRAY_WINDOW_COUNT_MAX = 64;
 
-let log = firetray.Logging.getLogger("firetray.ctypesMap");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.ctypesMap");
 
 /**
  * basic Hash mapping a key (of any type) to a cell in a ctypes array

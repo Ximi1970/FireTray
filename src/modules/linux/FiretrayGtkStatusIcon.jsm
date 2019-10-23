@@ -21,7 +21,8 @@ Cu.import("resource://firetray/linux/FiretrayGtkIcons.jsm");
 firetray.Handler.subscribeLibsForClosing([gobject, gdk, gtk, cairo, gio, pango,
   pangocairo]);
 
-let log = firetray.Logging.getLogger("firetray.GtkStatusIcon");
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+let log = Logging.getLogger("firetray.GtkStatusIcon");
 
 if ("undefined" == typeof(firetray.Handler))
   log.error("This module MUST be imported from/after FiretrayStatusIcon !");

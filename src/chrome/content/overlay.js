@@ -8,8 +8,11 @@ if ("undefined" == typeof(Cc)) var Cc = Components.classes;
 if ("undefined" == typeof(Ci)) var Ci = Components.interfaces;
 if ("undefined" == typeof(Cu)) var Cu = Components.utils;
 
+var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
+Logging.init();
+
 // can't use 'log': don't pollute global (chrome) namespace
-let firetray_log = firetray.Logging.getLogger("firetray.Chrome");
+let firetray_log = Logging.getLogger("firetray.Chrome");
 
 // https://groups.google.com/group/mozilla.dev.extensions/browse_thread/thread/e89e9c2a834ff2b6#
 var firetrayChrome = { // each new window gets a new firetrayChrome !
@@ -24,7 +27,7 @@ var firetrayChrome = { // each new window gets a new firetrayChrome !
     let init = firetray.Handler.initialized || firetray.Handler.init();
 
     firetray_log.debug("ONLOAD");
-//    this.winId = firetray.Handler.registerWindow(win);
+    this.winId = firetray.Handler.registerWindow(win);
 
     win.addEventListener('close', firetrayChrome.onClose, true);
     this.hijackTitlebarButtons();
