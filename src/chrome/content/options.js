@@ -25,7 +25,7 @@ var firetrayUIOptions = {
   onLoad: function(e) {
     log.debug("FULL FEATURED="+firetray.Handler.support['full_feat']);
     
-    Cu.import("resource://gre/modules/Services.jsm");
+    var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
     this.strings = Services.strings.createBundle("chrome://firetray/locale/options.properties");
 
     this.prefwindow = document.getElementById("firetray-preferences");
@@ -52,7 +52,7 @@ var firetrayUIOptions = {
         this.initNewMailIconNames();
     }
     
-    Cu.import("resource://gre/modules/Services.jsm");
+    var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
     if (firetray.Handler.inMailApp) {
       Cu.import("resource:///modules/MailServices.jsm");
       Cu.import("resource://firetray/FiretrayMessaging.jsm");
