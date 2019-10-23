@@ -20,9 +20,8 @@ var EXPORTED_SYMBOLS =
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
 
-Cu.import("resource://gre/modules/Services.jsm");
+var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 
 const FIRETRAY_VERSION     = "0.7.0pre1"; // needed for sync call of onVersionChange() :(
 const FIRETRAY_OS_SUPPORT  = ['freebsd', 'linux', 'winnt']; // install.rdf sync :(

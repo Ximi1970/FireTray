@@ -1,18 +1,13 @@
 /* -*- Mode: js2; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 "use strict";
 
-Components.utils.import("resource://firetray/commons.js");
-Components.utils.import("resource://firetray/FiretrayHandler.jsm");
-
-if ("undefined" == typeof(Cc)) var Cc = Components.classes;
-if ("undefined" == typeof(Ci)) var Ci = Components.interfaces;
-if ("undefined" == typeof(Cu)) var Cu = Components.utils;
-
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 Logging.init();
-
 // can't use 'log': don't pollute global (chrome) namespace
 let firetray_log = Logging.getLogger("firetray.Chrome");
+
+var { firetray } = ChromeUtils.import("resource://firetray/commons.js");
+var { firetray } = ChromeUtils.import("resource://firetray/FiretrayHandler.jsm");
 
 // https://groups.google.com/group/mozilla.dev.extensions/browse_thread/thread/e89e9c2a834ff2b6#
 var firetrayChrome = { // each new window gets a new firetrayChrome !
@@ -21,6 +16,7 @@ var firetrayChrome = { // each new window gets a new firetrayChrome !
   winId: null,
 
   onLoad: function(win) {
+        
     this.strings = Services.strings.createBundle("chrome://firetray/locale/overlay.properties");
 
     firetray_log.debug("Handler initialized: "+firetray.Handler.initialized);

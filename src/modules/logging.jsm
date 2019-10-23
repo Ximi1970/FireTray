@@ -15,9 +15,9 @@ var Logging = {
     var { Log } = ChromeUtils.import("resource://gre/modules/Log.jsm");
     this.LogMod = Log
     
-    this.setupLogging("firetray2");
+    this.setupLogging("firetray");
 
-    let log = this.getLogger("firetray2.Logging");
+    let log = this.getLogger("firetray.Logging");
     log.debug("initialized");
 
     this.initialized = true;
