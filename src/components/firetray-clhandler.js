@@ -1,11 +1,9 @@
 // https://developer.mozilla.org/en/Chrome/Command_Line
 
-const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
 
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://firetray/FiretrayHandler.jsm");
+var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/FiretrayHandler.jsm");
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.clhandler");

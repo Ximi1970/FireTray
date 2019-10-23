@@ -41,7 +41,7 @@ var EXPORTED_SYMBOLS  = [ "ctypes_library", "is64bit", "WinCbABI" ];
 const Cu = Components.utils;
 
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
+var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 
 const is64bit = ctypes.size_t.size == 8; // firetray.Handler.app.ABI.indexOf('_64') > -1;
 
