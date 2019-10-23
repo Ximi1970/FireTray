@@ -5,7 +5,7 @@ const SHELL32_ABIS    = [ "dll" ];
 
 const Cu = Components.utils;
 
-Cu.import("resource://gre/modules/ctypes.jsm");
+var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 Cu.import("resource://firetray/ctypes/ctypes-utils.jsm");
 Cu.import("resource://firetray/ctypes/winnt/win32.jsm");
 

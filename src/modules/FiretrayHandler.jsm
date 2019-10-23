@@ -8,7 +8,7 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/ctypes.jsm");
+var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 Cu.import("resource://firetray/commons.js");
 Cu.import("resource://firetray/PrefListener.jsm");
 

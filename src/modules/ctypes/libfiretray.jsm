@@ -40,7 +40,7 @@ var libfiretray = {
     log.info("__URI__2="+this.global.__URI__);
 
     // If ctypes doesn't exist, try to get it
-    Cu.import("resource://gre/modules/ctypes.jsm");
+    var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
     // If we still don't have ctypes, this isn't going to work...
     if (typeof(ctypes) == "undefined") {
       throw ("Could not load JS-Ctypes");
