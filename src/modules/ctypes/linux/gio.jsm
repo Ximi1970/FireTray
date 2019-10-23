@@ -5,14 +5,10 @@ var EXPORTED_SYMBOLS = [ "gio" ];
 const GIO_LIBNAME = "gio-2.0";
 const GIO_ABIS    = [ "0" ];
 
-const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
-Cu.import("resource://firetray/ctypes/linux/glib.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { glib } = ChromeUtils.import("resource://firetray/ctypes/linux/glib.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
 
 function gio_defines(lib) {
   this.GIcon = ctypes.StructType("GIcon");

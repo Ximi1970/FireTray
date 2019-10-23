@@ -7,7 +7,7 @@ const Cu = Components.utils;
 
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
-Cu.import("resource://firetray/ctypes/winnt/win32.jsm");
+var { win32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/win32.jsm");
 
 function user32_defines(lib) {
 

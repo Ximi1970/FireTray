@@ -9,10 +9,13 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/ctypes/linux/cairo.jsm");
-Cu.import("resource://firetray/ctypes/linux/glib.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
-Cu.import("resource://firetray/ctypes/linux/x11.jsm");
+var { cairo } = ChromeUtils.import("resource://firetray/ctypes/linux/cairo.jsm");
+var { glib } = ChromeUtils.import("resource://firetray/ctypes/linux/glib.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { x11,
+      XATOMS, XATOMS_ICCCM, XATOMS_EWMH_GENERAL, XATOMS_EWMH_WM_STATES,
+      XPROP_MAX_COUNT, XPROP_BASE_TYP, XPROP_BASE_TYPE_LONG_PROPORTION
+    } = ChromeUtils.import("resource://firetray/ctypes/linux/x11.jsm");
 
 function gdk23_defines(lib) {
 

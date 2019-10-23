@@ -42,13 +42,9 @@ var EXPORTED_SYMBOLS = [ "gobject", "glib" ];
 const GOBJECT_LIBNAME = "gobject-2.0";
 const GOBJECT_ABIS = [ 0 ];
 
-const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
-Cu.import("resource://firetray/ctypes/linux/glib.jsm");
+var { glib } = ChromeUtils.import("resource://firetray/ctypes/linux/glib.jsm");
 
 function gobject_defines(lib) {
 

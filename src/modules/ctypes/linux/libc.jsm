@@ -5,10 +5,6 @@ var EXPORTED_SYMBOLS = [ "libc" ];
 const LIBC_LIBNAME = "c";
 const LIBC_ABIS    = [ 6 ];
 
-const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
 

@@ -5,10 +5,6 @@ var EXPORTED_SYMBOLS = [ "cairo" ];
 const CAIRO_LIBNAME = "cairo";
 const CAIRO_ABIS    = [ 2 ];
 
-const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
 

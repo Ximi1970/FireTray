@@ -6,8 +6,8 @@ const KERNEL32_ABIS    = [ "dll" ];
 const Cu = Components.utils;
 
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/ctypes/ctypes-utils.jsm");
-Cu.import("resource://firetray/ctypes/winnt/win32.jsm");
+var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
+var { win32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/win32.jsm");
 
 function kernel32_defines(lib) {
 

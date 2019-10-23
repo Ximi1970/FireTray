@@ -11,9 +11,9 @@ const Ci = Components.interfaces;
 
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
-Cu.import("resource://firetray/ctypes/linux/cairo.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
-Cu.import("resource://firetray/ctypes/linux/pango.jsm");
+var { cairo } = ChromeUtils.import("resource://firetray/ctypes/linux/cairo.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { pango, pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pango.jsm");
 
 function pangocairo_defines(lib) {
   lib.lazy_bind("pango_cairo_show_layout", ctypes.void_t, cairo.cairo_t.ptr, pango.PangoLayout.ptr);

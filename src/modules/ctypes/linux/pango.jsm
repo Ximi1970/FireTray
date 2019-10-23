@@ -5,14 +5,10 @@ var EXPORTED_SYMBOLS = [ "pango", "pangocairo" ];
 const PANGO_LIBNAME = "pango-1.0";
 const PANGO_ABIS    = [ 0 ];
 
-const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
-Cu.import("resource://firetray/ctypes/linux/cairo.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { cairo } = ChromeUtils.import("resource://firetray/ctypes/linux/cairo.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
 
 function pango_defines(lib) {
   this.PANGO_WEIGHT_THIN       = 100;

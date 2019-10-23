@@ -9,10 +9,6 @@ var EXPORTED_SYMBOLS = [
 const X11_LIBNAME = "X11";
 const X11_ABIS    = [ 6 ];
 
-const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");

@@ -4,10 +4,6 @@
  */
 var EXPORTED_SYMBOLS = [ "gtk" ];
 
-const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 function gtk23_defines(lib) {
   /* FIXME: We can't easily share code btw. gtk2/gtk.jsm and gtk3/gtk.jsm
    because we'd need to import a gdk.jsm into gtk23.jsm... We can't import
