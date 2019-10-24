@@ -2,21 +2,29 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
-const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/commons.js"); // first for Handler.app !
-Cu.import("resource://firetray/ctypes/ctypesMap.jsm");
-Cu.import("resource://firetray/ctypes/linux/gio.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
-Cu.import("resource://firetray/linux/FiretrayGtkIcons.jsm");
-Cu.import("resource://firetray/linux/FiretrayWindow.jsm");
+var { firetray,
+      FIRETRAY_CHAT_ICON_BLINK_STYLE_NORMAL,
+      FIRETRAY_CHAT_ICON_BLINK_STYLE_FADE,
+      FIRETRAY_IM_STATUS_OFFLINE,
+      FIRETRAY_IM_STATUS_AWAY,
+      FIRETRAY_IM_STATUS_AVAILABLE,
+      FIRETRAY_IM_STATUS_BUSY
+    } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
+var { ctypesMap,
+      FIRETRAY_WINDOW_COUNT_MAX,
+      DeleteError
+    } = ChromeUtils.import("resource://firetray/ctypes/ctypesMap.jsm");
+var { gio } = ChromeUtils.import("resource://firetray/ctypes/linux/gio.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayGtkIcons.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayWindow.jsm");
 firetray.Handler.subscribeLibsForClosing([gdk, gio, gobject, gtk]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");

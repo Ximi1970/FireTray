@@ -2,23 +2,26 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://gre/modules/osfile.jsm");
-Cu.import("resource://firetray/commons.js"); // first for Handler.app !
-Cu.import("resource://firetray/icons.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { OS } = ChromeUtils.import("resource://gre/modules/osfile.jsm");
+var { firetray,
+      FIRETRAY_APPINDICATOR_ID,
+      FIRETRAY_MIDDLE_CLICK_ACTIVATE_LAST,
+      FIRETRAY_MIDDLE_CLICK_SHOW_HIDE,
+      FIRETRAY_NOTIFICATION_BLANK_ICON,
+      FIRETRAY_NOTIFICATION_NEWMAIL_ICON,
+      FIRETRAY_NOTIFICATION_CUSTOM_ICON
+    } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
+var { EMBEDDED_ICON_FILES } = ChromeUtils.import("resource://firetray/icons.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
 // FIXME: can't subscribeLibsForClosing([appind])
 // https://bugs.launchpad.net/ubuntu/+source/firefox/+bug/1393256
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/appindicator.jsm");
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
-Cu.import("resource://firetray/ctypes/linux/cairo.jsm");
-Cu.import("resource://firetray/ctypes/linux/pango.jsm");
-Cu.import("resource://firetray/ctypes/linux/pangocairo.jsm");
+var { appind } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/appindicator.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
+var { cairo } = ChromeUtils.import("resource://firetray/ctypes/linux/cairo.jsm");
+var { pango, pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pango.jsm");
+var { pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pangocairo.jsm");
 firetray.Handler.subscribeLibsForClosing([gobject, gdk, gtk, cairo, pango, pangocairo]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");

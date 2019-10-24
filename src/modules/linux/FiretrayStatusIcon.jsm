@@ -2,18 +2,18 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
-const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/commons.js"); // first for Handler.app !
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
-Cu.import("resource://firetray/ctypes/linux/gio.jsm");
-Cu.import("resource://firetray/ctypes/linux/glib.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
-Cu.import("resource://firetray/ctypes/linux/libc.jsm");
-Cu.import("resource://firetray/ctypes/linux/x11.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayPopupMenu.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
+var { gio } = ChromeUtils.import("resource://firetray/ctypes/linux/gio.jsm");
+var { glib } = ChromeUtils.import("resource://firetray/ctypes/linux/glib.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { libc } = ChromeUtils.import("resource://firetray/ctypes/linux/libc.jsm");
+var { x11 } = ChromeUtils.import("resource://firetray/ctypes/linux/x11.jsm");
 firetray.Handler.subscribeLibsForClosing([gdk, gio, glib, gobject]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
@@ -44,7 +44,6 @@ firetray.StatusIcon = {
     // PopupMenu g_connect's some Handler functions. As these are overridden is
     // StatusIcon implementations, PopupMenu must be initialized *after*
     // implemenations are imported.
-    Cu.import("resource://firetray/linux/FiretrayPopupMenu.jsm");
     if (!firetray.PopupMenu.init())
       return false;
 

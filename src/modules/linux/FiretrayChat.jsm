@@ -2,14 +2,19 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
-const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
 
-Cu.import("resource:///modules/imServices.jsm");
-Cu.import("resource://firetray/commons.js");
-Cu.import("resource://firetray/linux/FiretrayChatStatusIcon.jsm");
-Cu.import("resource://firetray/linux/FiretrayWindow.jsm");
+var { Services } = ChromeUtils.import("resource:///modules/imServices.jsm");
+var { firetray,
+      FIRETRAY_CHAT_ICON_BLINK_STYLE_NORMAL,
+      FIRETRAY_CHAT_ICON_BLINK_STYLE_FADE,
+      FIRETRAY_IM_STATUS_OFFLINE,
+      FIRETRAY_IM_STATUS_AWAY,
+      FIRETRAY_IM_STATUS_AVAILABLE,
+      FIRETRAY_IM_STATUS_BUSY
+    } = ChromeUtils.import("resource://firetray/commons.js");
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayChatStatusIcon.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayWindow.jsm");
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.Chat");

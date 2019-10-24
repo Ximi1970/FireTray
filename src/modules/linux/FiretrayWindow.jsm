@@ -9,22 +9,30 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
-const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/commons.js"); // first for Handler.app !
-Cu.import("resource://firetray/ctypes/ctypesMap.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
-Cu.import("resource://firetray/ctypes/linux/libc.jsm");
-Cu.import("resource://firetray/ctypes/linux/x11.jsm");
-Cu.import("resource://firetray/FiretrayWindow.jsm");
+var { firetray,
+      FIRETRAY_CB_SENTINEL
+    } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
+var { ctypesMap,
+      FIRETRAY_WINDOW_COUNT_MAX,
+      DeleteError
+    } = ChromeUtils.import("resource://firetray/ctypes/ctypesMap.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
+var { libc } = ChromeUtils.import("resource://firetray/ctypes/linux/libc.jsm");
+var { x11,
+      XATOMS_EWMH_WM_STATES,
+      XATOMS
+    } = ChromeUtils.import("resource://firetray/ctypes/linux/x11.jsm");
+var { FiretrayWindow } = ChromeUtils.import("resource://firetray/FiretrayWindow.jsm");
 firetray.Handler.subscribeLibsForClosing([gobject, gdk, gtk, libc, x11, glib]);
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayChat.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayChatStatusIcon.jsm");
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.Window");
@@ -70,11 +78,6 @@ firetray.Window.init = function() {
   );
   if (!gtkVersionCheck.isNull())
     log.error("gtk_check_version="+gtkVersionCheck.readString());
-
-  if (firetray.Handler.isChatEnabled()) {
-    Cu.import("resource://firetray/linux/FiretrayChat.jsm");
-    Cu.import("resource://firetray/linux/FiretrayChatStatusIcon.jsm");
-  }
 
   this.initialized = true;
 };

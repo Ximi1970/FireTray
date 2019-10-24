@@ -2,12 +2,11 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
+var { firetray } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
+var { glib } = ChromeUtils.import("resource://firetray/ctypes/linux/glib.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
 
-Cu.import("resource://firetray/commons.js"); // first for Handler.app !
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
 firetray.Handler.subscribeLibsForClosing([gtk]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
@@ -43,8 +42,6 @@ firetray.GtkIcons = {
     log.debug("gtkIconTheme="+gtkIconTheme);
 
     if (log.level <= Logging.LogMod.Level.Debug) {
-      Cu.import("resource://firetray/ctypes/linux/glib.jsm");
-      Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
       firetray.Handler.subscribeLibsForClosing([glib, gobject]);
       let path = new gobject.gchar.ptr.ptr;
       let n_elements = new gobject.gint;

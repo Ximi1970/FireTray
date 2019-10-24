@@ -2,22 +2,28 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://gre/modules/osfile.jsm");
-Cu.import("resource://firetray/commons.js"); // first for Handler.app !
-Cu.import("resource://firetray/icons.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
-Cu.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
-Cu.import("resource://firetray/ctypes/linux/cairo.jsm");
-Cu.import("resource://firetray/ctypes/linux/gio.jsm");
-Cu.import("resource://firetray/ctypes/linux/pango.jsm");
-Cu.import("resource://firetray/ctypes/linux/pangocairo.jsm");
-Cu.import("resource://firetray/linux/FiretrayGtkIcons.jsm");
+var { OS } = ChromeUtils.import("resource://gre/modules/osfile.jsm");
+var { firetray,
+      FIRETRAY_CB_SENTINEL,
+      FIRETRAY_MIDDLE_CLICK_ACTIVATE_LAST,
+      FIRETRAY_MIDDLE_CLICK_SHOW_HIDE,
+      FIRETRAY_APPLICATION_ICON_TYPE_THEMED,
+      FIRETRAY_APPLICATION_ICON_TYPE_CUSTOM,
+      FIRETRAY_NOTIFICATION_BLANK_ICON,
+      FIRETRAY_NOTIFICATION_NEWMAIL_ICON,
+      FIRETRAY_NOTIFICATION_CUSTOM_ICON
+    } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
+var { EMBEDDED_ICON_FILES } = ChromeUtils.import("resource://firetray/icons.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
+var { cairo } = ChromeUtils.import("resource://firetray/ctypes/linux/cairo.jsm");
+var { gio } = ChromeUtils.import("resource://firetray/ctypes/linux/gio.jsm");
+var { pango, pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pango.jsm");
+var { pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pangocairo.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayGtkIcons.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayPopupMenu.jsm");
 firetray.Handler.subscribeLibsForClosing([gobject, gdk, gtk, cairo, gio, pango,
   pangocairo]);
 
@@ -86,7 +92,6 @@ firetray.GtkStatusIcon = {
   },
 
   addCallbacks: function() {
-    Cu.import("resource://firetray/linux/FiretrayPopupMenu.jsm");
     /* NOTE: here we do use a function handler (instead of a function
      definition) because we need the args passed to it ! As a consequence, we
      need to abandon 'this' in PopupMenu.popup() */
