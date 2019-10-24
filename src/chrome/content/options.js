@@ -2,11 +2,27 @@
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
 
-Cu.import("resource://firetray/FiretrayHandler.jsm");
-Cu.import("resource://firetray/commons.js");
+var { firetray } = ChromeUtils.import("resource://firetray/FiretrayHandler.jsm");
+var { firetray, 
+      FIRETRAY_APPLICATION_ICON_TYPE_THEMED,
+      FIRETRAY_APPLICATION_ICON_TYPE_CUSTOM,
+      FIRETRAY_NOTIFICATION_BLANK_ICON,
+      FIRETRAY_NOTIFICATION_NEWMAIL_ICON,
+      FIRETRAY_NOTIFICATION_CUSTOM_ICON,
+      FIRETRAY_MESSAGE_COUNT_TYPE_UNREAD,
+      FIRETRAY_MESSAGE_COUNT_TYPE_NEW,
+      FIRETRAY_CHAT_ICON_BLINK_STYLE_NORMAL,
+      FIRETRAY_CHAT_ICON_BLINK_STYLE_FADE
+    } = ChromeUtils.import("resource://firetray/commons.js");
+var { firetray, FLDRS_UNINTERESTING } = ChromeUtils.import("resource://firetray/FiretrayMessaging.jsm");    
+var { firetray } = ChromeUtils.import("resource://firetray/"+firetray.Handler.app.OS+"/FiretrayChat.jsm");
 
+var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
+var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+
+    
+    
 const TREEROW_ACCOUNT_OR_SERVER_TYPE_NAME     = 0;
 const TREEROW_ACCOUNT_OR_SERVER_TYPE_EXCLUDED = 1;
 const TREEROW_ACCOUNT_OR_SERVER_TYPE_ORDER    = 2;
@@ -25,7 +41,6 @@ var firetrayUIOptions = {
   onLoad: function(e) {
     log.debug("FULL FEATURED="+firetray.Handler.support['full_feat']);
     
-    var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
     this.strings = Services.strings.createBundle("chrome://firetray/locale/options.properties");
 
     this.prefwindow = document.getElementById("firetray-preferences");
@@ -52,10 +67,7 @@ var firetrayUIOptions = {
         this.initNewMailIconNames();
     }
     
-    var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
     if (firetray.Handler.inMailApp) {
-      Cu.import("resource:///modules/MailServices.jsm");
-      Cu.import("resource://firetray/FiretrayMessaging.jsm");
       this.initMailControls();
     } else {
       document.getElementById("pref-tab-mail").hidden = true;
@@ -65,7 +77,6 @@ var firetrayUIOptions = {
     if (firetray.Handler.isChatProvided() &&
         firetray.Handler.support['chat'] &&
         !firetray.AppIndicator) {
-      Cu.import("resource://firetray/"+firetray.Handler.app.OS+"/FiretrayChat.jsm");
       this.initChatControls();
     } else {
       document.getElementById("pref-tab-chat").hidden = true;
