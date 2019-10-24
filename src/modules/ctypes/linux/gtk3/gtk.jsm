@@ -5,16 +5,12 @@ var EXPORTED_SYMBOLS = [ "gtk" ];
 const GTK_LIBNAME = "gtk-3";
 const GTK_ABIS    = [ 0 ];
 
-const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
-Cu.import("resource://firetray/ctypes/linux/gio.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
-Cu.import("resource://firetray/ctypes/linux/pango.jsm");
-Cu.import("resource://firetray/ctypes/linux/gtk3/gdk.jsm");
+var { ctypes_library } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
+var { gio } = ChromeUtils.import("resource://firetray/ctypes/linux/gio.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { pango, pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pango.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/gtk3/gdk.jsm");
 
 function gtk_defines(lib) {
 

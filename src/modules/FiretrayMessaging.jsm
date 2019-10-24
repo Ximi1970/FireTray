@@ -2,15 +2,20 @@
 
 var EXPORTED_SYMBOLS = [ "firetray", "FLDRS_UNINTERESTING" ];
 
-const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
-Cu.import("resource:///modules/iteratorUtils.jsm");
-Cu.import("resource:///modules/MailServices.jsm");
-Cu.import("resource://gre/modules/PluralForm.jsm");
-Cu.import("resource://firetray/commons.js");
+var { fixIterator } = ChromeUtils.import("resource:///modules/iteratorUtils.jsm");
+var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
+var { PluralForm } = ChromeUtils.import("resource://gre/modules/PluralForm.jsm");
+var { firetray,
+      FIRETRAY_MESSAGE_COUNT_TYPE_UNREAD,
+      FIRETRAY_MESSAGE_COUNT_TYPE_NEW,
+      FIRETRAY_NOTIFICATION_BLANK_ICON,
+      FIRETRAY_NOTIFICATION_NEWMAIL_ICON,
+      FIRETRAY_NOTIFICATION_CUSTOM_ICON,
+      FIRETRAY_ACCOUNT_SERVER_TYPE_IM
+    } = ChromeUtils.import("resource://firetray/commons.js");
 
 const FLDRS_UNINTERESTING = {
   Archive:   Ci.nsMsgFolderFlags.Archive,   // 0x00004000

@@ -17,7 +17,7 @@ all: $(libs)
 	@echo "resource	firetray-lib			lib/linux/$(libs)	abi=Linux_x86_64-gcc3"
 	@echo
 	@echo and use
-	@echo 'Cu.import("resource://firetray/ctypes/libfiretray.jsm");'
+	@echo 'var { libfiretray } = ChromeUtils.import("resource://firetray/ctypes/libfiretray.jsm");'
 	@echo 'firetray.Handler.subscribeLibsForClosing([libfiretray]);'
 	@echo
 

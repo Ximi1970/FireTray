@@ -5,12 +5,10 @@ var EXPORTED_SYMBOLS = [ "appind" ];
 const APPINDICATOR_LIBNAME = "appindicator";
 const APPINDICATOR_ABIS    = [ 1 ];
 
-const Cu = Components.utils;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
-Cu.import("resource://firetray/ctypes/linux/gtk2/gtk.jsm");
+var { ctypes_library } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/gtk2/gtk.jsm");
 
 function appindicator_defines(lib) {
   this.AppIndicator = ctypes.StructType("AppIndicator");

@@ -5,16 +5,12 @@ var EXPORTED_SYMBOLS = [ "gdk" ];
 const GDK_LIBNAME = "gdk-3";
 const GDK_ABIS    = [ 0 ];
 
-const Cu = Components.utils;
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-var { ctypes_library, is64bit, WinCbABI } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
-Cu.import("resource://firetray/ctypes/linux/cairo.jsm");
-Cu.import("resource://firetray/ctypes/linux/gobject.jsm");
-Cu.import("resource://firetray/ctypes/linux/x11.jsm");
-Cu.import("resource://firetray/ctypes/linux/gdk23.jsm");
+var { ctypes_library } = ChromeUtils.import("resource://firetray/ctypes/ctypes-utils.jsm");
+var { cairo } = ChromeUtils.import("resource://firetray/ctypes/linux/cairo.jsm");
+var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
+var { x11 } = ChromeUtils.import("resource://firetray/ctypes/linux/x11.jsm");
+var { gdk23_defines } = ChromeUtils.import("resource://firetray/ctypes/linux/gdk23.jsm");
 
 function gdk_defines(lib) {
 
