@@ -14,6 +14,7 @@ var { glib } = ChromeUtils.import("resource://firetray/ctypes/linux/glib.jsm");
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
 var { libc } = ChromeUtils.import("resource://firetray/ctypes/linux/libc.jsm");
 var { x11 } = ChromeUtils.import("resource://firetray/ctypes/linux/x11.jsm");
+var { appind } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/appindicator.jsm");
 firetray.Handler.subscribeLibsForClosing([gdk, gio, glib, gobject]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
@@ -36,9 +37,9 @@ firetray.StatusIcon = {
     this.defineIconNames();
 
     if (firetray.Handler.useAppind) {
-      Cu.import("resource://firetray/linux/FiretrayAppIndicator.jsm");
+      let { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayAppIndicator.jsm");
     } else {
-      Cu.import("resource://firetray/linux/FiretrayGtkStatusIcon.jsm");
+      let { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayGtkStatusIcon.jsm");
     }
 
     // PopupMenu g_connect's some Handler functions. As these are overridden is
@@ -91,8 +92,6 @@ firetray.StatusIcon = {
   },
 
   appindEnable: function() {
-    Cu.import("resource://firetray/ctypes/linux/"+
-              firetray.Handler.app.widgetTk+"/appindicator.jsm");
     /* FIXME: Ubuntu14.04/Unity: successfully closing appind crashes FF/TB
      during exit, in Ubuntu's unity-menubar.patch's code.
      https://bugs.launchpad.net/ubuntu/+source/firefox/+bug/1393256 */
