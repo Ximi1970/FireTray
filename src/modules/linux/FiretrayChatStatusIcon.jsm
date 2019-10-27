@@ -21,18 +21,20 @@ var { ctypesMap,
     } = ChromeUtils.import("resource://firetray/ctypes/ctypesMap.jsm");
 var { gio } = ChromeUtils.import("resource://firetray/ctypes/linux/gio.jsm");
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
-var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
 var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayGtkIcons.jsm");
 var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayWindow.jsm");
-firetray.Handler.subscribeLibsForClosing([gdk, gio, gobject, gtk]);
+
+//MR firetray.Handler.subscribeLibsForClosing([gdk, gio, gobject, gtk]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.ChatStatusIcon");
 
+/* //MR
 if ("undefined" == typeof(firetray.Handler))
   log.error("This module MUST be imported from/after FiretrayHandler !");
-
+*/
 
 const ALPHA_STEP                       = 5;
 const ALPHA_STEP_SLEEP_MILLISECONDS    = 10;

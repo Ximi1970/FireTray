@@ -2,19 +2,21 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
+var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { firetray } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
 var { glib } = ChromeUtils.import("resource://firetray/ctypes/linux/glib.jsm");
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
 
-firetray.Handler.subscribeLibsForClosing([gtk]);
+//MR firetray.Handler.subscribeLibsForClosing([gtk]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.GtkIcons");
 
+/* //MR
 if ("undefined" == typeof(firetray.StatusIcon))
   log.error("This module MUST be imported from/after StatusIcon !");
-
+*/
 
 firetray.GtkIcons = {
   initialized: false,
