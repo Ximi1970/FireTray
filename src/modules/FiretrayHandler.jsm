@@ -29,6 +29,17 @@ if ("undefined" == typeof(firetray)) {
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.Handler");
 
+var { firetray } = ChromeUtils.import("resource://firetray/"+Services.appinfo.OS.toLowerCase()+"/FiretrayStatusIcon.jsm");
+log.debug("FiretrayStatusIcon "+Services.appinfo.OS.toLowerCase()+" imported");
+log.info("useAppind="+firetray.StatusIcon.appindEnable());
+var { firetray } = ChromeUtils.import("resource://firetray/"+Services.appinfo.OS.toLowerCase()+"/FiretrayWindow.jsm");
+log.debug("FiretrayWindow "+Services.appinfo.OS.toLowerCase()+" imported");
+
+var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/FiretrayMessaging.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/"+Services.appinfo.OS.toLowerCase()+"/FiretrayChat.jsm");
+var { IOUtils } = ChromeUtils.import("resource:///modules/IOUtils.js");
+ 
 /**
  * Singleton object and abstraction for windows and tray icon management.
  */
@@ -44,8 +55,8 @@ firetray.Handler = {
   inMailApp: false,
   appHasChat: false,
   appStarted: false,
-  useAppind: false,             // initialized in StatusIcon
-  canAppind: false,             // initialized in StatusIcon
+  useAppind: firetray.StatusIcon.appindEnable(),
+  canAppind: firetray.StatusIcon.canAppind,
   windows: {},
   get windowsCount() {return Object.keys(this.windows).length;},
   get visibleWindowsCount() {
@@ -70,6 +81,8 @@ firetray.Handler = {
   support: {chat: false, winnt: false},
 
   init: function() {            // does creates icon
+    log.debug("Init");
+    
     firetray.PrefListener.register(false);
     firetray.MailChatPrefListener.register(false);
 
@@ -89,11 +102,13 @@ firetray.Handler = {
       this.app.OS = "linux";
     }
 
-    Cu.import("resource://firetray/"+this.app.OS+"/FiretrayStatusIcon.jsm");
+/*
+    var { firetray } = ChromeUtils.import("resource://firetray/"+this.app.OS+"/FiretrayStatusIcon.jsm");
     log.debug("FiretrayStatusIcon "+this.app.OS+" imported");
     log.info("useAppind="+firetray.Handler.useAppind);
-    Cu.import("resource://firetray/"+this.app.OS+"/FiretrayWindow.jsm");
+    var { firetray } = ChromeUtils.import("resource://firetray/"+this.app.OS+"/FiretrayWindow.jsm");
     log.debug("FiretrayWindow "+this.app.OS+" imported");
+*/
 
     this.support['chat']  =
       ['linux'].indexOf(this.app.OS) > -1 && !this.useAppind;
@@ -119,8 +134,8 @@ firetray.Handler = {
 
     if (this.inMailApp) {
       try {
-        Cu.import("resource:///modules/MailServices.jsm");
-        Cu.import("resource://firetray/FiretrayMessaging.jsm");
+//MR        Cu.import("resource:///modules/MailServices.jsm");
+//MR        Cu.import("resource://firetray/FiretrayMessaging.jsm");
         if (firetray.Utils.prefService.getBoolPref("mail_notification_enabled")) {
           firetray.Messaging.init();
           firetray.Messaging.updateMsgCountWithCb();
@@ -135,8 +150,8 @@ firetray.Handler = {
     log.info('isChatProvided='+chatIsProvided);
     if (chatIsProvided) {
       if (this.support['chat']) {
-        Cu.import("resource://firetray/FiretrayMessaging.jsm"); // needed for existsChatAccount
-        Cu.import("resource://firetray/"+this.app.OS+"/FiretrayChat.jsm");
+//MR        Cu.import("resource://firetray/FiretrayMessaging.jsm"); // needed for existsChatAccount
+//MR        Cu.import("resource://firetray/"+this.app.OS+"/FiretrayChat.jsm");
         firetray.Utils.addObservers(firetray.Handler, [
           "account-added", "account-removed"]);
         if (firetray.Utils.prefService.getBoolPref("chat_icon_enable") &&
@@ -167,6 +182,7 @@ firetray.Handler = {
     this.disablePrefsTmp();
 
     this.initialized = true;
+    log.debug("Init Done");
     return true;
   },
 
@@ -220,7 +236,7 @@ firetray.Handler = {
   },
 
   readTBRestoreWindowsCount: function() {
-    Cu.import("resource:///modules/IOUtils.js");
+//MR    Cu.import("resource:///modules/IOUtils.js");
     let sessionFile = Services.dirsvc.get("ProfD", Ci.nsIFile);
     sessionFile.append("session.json");
     var initialState = null;
@@ -327,24 +343,74 @@ firetray.Handler = {
     }
   },
 
+  // Interface
+
+  loadIcons: function() {
+    firetray.StatusIcon.loadIcons();
+  },
+
+  loadImageCustom: function(prefname) {
+    firetray.StatusIcon.loadImageCustom(prefname);
+  },
+
+  setIconImageDefault: function() {
+    firetray.StatusIcon.setIconImageDefault();
+  },
+
+  setIconImageBlank: function() {
+    firetray.StatusIcon.setIconImageBlank();
+  },
+
+  setIconImageNewMail: function() {
+    firetray.StatusIcon.setIconImageNewMail();
+  },
+
+  setIconImageCustom: function(prefname) {
+    firewall.StatusIcon.setIconImageCustom(prefname);
+  },
+  
+  setIconTooltipDefault: function() {
+    firetray.StatusIcon.setIconTooltipDefault();
+  },
+
+  setIconTooltip: function(localizedMessage) {
+    firetray.StatusIcon.setIconTooltip(localizedMessage);
+  },
+  
+  setIconText: function(text, color) {
+    firetray.StatusIcon.setIconText(text, color);
+  },
+  
+  setIconVisibility: function(visible) {
+    firetray.StatusIcon.setIconVisibility(visible);
+  },
+  
+
   // these get overridden in OS-specific Icon/Window handlers
-  loadIcons: function() {},
-  loadImageCustom: function(prefname) {},
-  setIconImageDefault: function() {},
-  setIconImageBlank: function() {},
-  setIconImageNewMail: function() {},
-  setIconImageCustom: function(prefname) {},
-  setIconText: function(text, color) {},
-  setIconTooltip: function(localizedMessage) {},
-  setIconTooltipDefault: function() {},
-  setIconVisibility: function(visible) {},
-  registerWindow: function(win) {},
-  unregisterWindow: function(win) {},
-  hideWindow: function(winId) {},
-  showWindow: function(winId) {},
-  showAllWindowsAndActivate:function() {}, // linux
-  getActiveWindow: function() {},
-  windowGetAttention: function(winId) {},
+
+  
+  dumpWindows: function() {
+    firetray.Window.dumpWindows();
+  },
+  registerWindow: function(win) {
+        firetray.Window.registerWindow(win);
+  },
+  unregisterWindow: function(win) {
+        firetray.Window.unregisterWindow(win);
+  },
+  hideWindow: function(winId) {
+    firetray.Window.hideWindow(winId);
+  },
+  showWindow: function(winId) {
+    firetray.Window.showWindow(winId);
+  },
+  showAllWindowsAndActivate: firetray.Window.showAllWindowsAndActivate, // linux
+  getActiveWindow: function() {
+    firetray.Window.getActiveWindow();
+  },
+  windowGetAttention: function(winId) {
+    firetray.Windows.windowGetAttention(winId);
+  },
   showHidePopupMenuItems: function() {}, // linux
   addPopupWindowItemAndSeparatorMaybe: function(wid) {}, // winnt
   removePopupWindowItemAndSeparatorMaybe: function(wid) {}, // winnt
@@ -547,8 +613,8 @@ firetray.Handler = {
       firetray.Utils.prefService.setBoolPref('nomail_hides_icon', false);
     if (prefName !== 'show_icon_on_hide')
       firetray.Utils.prefService.setBoolPref('show_icon_on_hide', false);
-  }
-
+  },
+  
 }; // firetray.Handler
 
 
@@ -652,8 +718,8 @@ firetray.MailChatPrefListener = new PrefListener(
 
       if (Services.prefs.getBoolPref("mail.chat.enabled")) {
         if (!firetray.Chat) {
-          Cu.import("resource://firetray/FiretrayMessaging.jsm"); // needed for existsChatAccount
-          Cu.import("resource://firetray/linux/FiretrayChat.jsm");
+//MR          Cu.import("resource://firetray/FiretrayMessaging.jsm"); // needed for existsChatAccount
+//MR          Cu.import("resource://firetray/linux/FiretrayChat.jsm");
           firetray.Utils.addObservers(firetray.Handler, [
             "account-added", "account-removed"]);
         }

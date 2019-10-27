@@ -2,23 +2,16 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
-
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/ctypes/winnt/win32.jsm");
-Cu.import("resource://firetray/ctypes/winnt/user32.jsm");
-Cu.import("resource://firetray/commons.js");
-firetray.Handler.subscribeLibsForClosing([user32]);
+var { win32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/win32.jsm");
+var { user32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/user32.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/commons.js");
+//MR firetray.Handler.subscribeLibsForClosing([user32]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.PopupMenu");
-
-if ("undefined" == typeof(firetray.StatusIcon))
-  log.error("This module MUST be imported from/after StatusIcon !");
 
 // popupmenu items
 const IDM_PREF    = 100;
@@ -33,17 +26,22 @@ firetray.PopupMenu = {
   menu: null,
 
   init: function() {
+    log.debug("Init");
+
     this.create();
 
     this.initialized = true;
+    log.debug("Init Done");
     return true;
   },
 
   shutdown: function() {
+    log.debug("Shutdown");
+
     this.destroy();
 
-    log.debug("Disabling PopupMenu");
     this.initialized = false;
+    log.debug("Shutdown Done");
   },
 
   create: function() {

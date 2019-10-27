@@ -2,16 +2,12 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
-
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/ctypes/winnt/win32.jsm");
-Cu.import("resource://firetray/ctypes/winnt/kernel32.jsm");
-Cu.import("resource://firetray/ctypes/winnt/user32.jsm");
-Cu.import("resource://firetray/commons.js");
-firetray.Handler.subscribeLibsForClosing([kernel32, user32]);
+var { win32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/win32.jsm");
+var { kernel32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/kernel32.jsm");
+var { user32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/user32.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/commons.js");
+//MR firetray.Handler.subscribeLibsForClosing([kernel32, user32]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.Win32");

@@ -7,15 +7,16 @@ var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm")
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { firetray } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
-firetray.Handler.subscribeLibsForClosing([gobject, gtk]);
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
+//firetray.Handler.subscribeLibsForClosing([gobject, gtk]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.PopupMenu");
 
+/** //MR
 if ("undefined" == typeof(firetray.StatusIcon))
   log.error("This module MUST be imported from/after StatusIcon !");
-
+*/
 
 firetray.PopupMenu = {
   MENU_ITEM_WINDOWS_POSITION: 4,
@@ -28,6 +29,8 @@ firetray.PopupMenu = {
   menuItem: {tip: null, showHide: null, activateLast: null, sep: null},
 
   init: function() {
+    log.debug("Init");
+    
     this.menu = gtk.gtk_menu_new();
     this.menuShell = ctypes.cast(this.menu, gtk.GtkMenuShell.ptr);
     var addMenuSeparator = false;
@@ -75,6 +78,7 @@ firetray.PopupMenu = {
     this.prependAppIndicatorItems();
 
     this.initialized = true;
+    log.debug("Init Done");
     return true;
   },
 
@@ -267,5 +271,7 @@ firetray.PopupMenu = {
 
 }; // firetray.PopupMenu
 
+/* //MR
 firetray.Handler.showHidePopupMenuItems =
   firetray.PopupMenu.showHideWindowItems.bind(firetray.PopupMenu);
+*/

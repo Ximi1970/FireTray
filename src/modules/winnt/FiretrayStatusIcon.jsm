@@ -5,31 +5,30 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
-
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://gre/modules/osfile.jsm");
-Cu.import("resource://firetray/ctypes/ctypesMap.jsm");
-Cu.import("resource://firetray/ctypes/winnt/win32.jsm");
-Cu.import("resource://firetray/ctypes/winnt/gdi32.jsm");
-Cu.import("resource://firetray/ctypes/winnt/kernel32.jsm");
-Cu.import("resource://firetray/ctypes/winnt/shell32.jsm");
-Cu.import("resource://firetray/ctypes/winnt/user32.jsm");
-Cu.import("resource://firetray/winnt/FiretrayWin32.jsm");
-Cu.import("resource://firetray/commons.js");
-Cu.import("resource://firetray/icons.jsm");
-firetray.Handler.subscribeLibsForClosing([gdi32, kernel32, shell32, user32]);
+var { OS } = ChromeUtils.import("resource://gre/modules/osfile.jsm");
+var { ctypesMap, FIRETRAY_WINDOW_COUNT_MAX, DeleteError } = ChromeUtils.import("resource://firetray/ctypes/ctypesMap.jsm");
+var { win32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/win32.jsm");
+var { gdi32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/gdi32.jsm");
+var { kernel32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/kernel32.jsm");
+var { shell32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/shell32.jsm");
+var { user32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/user32.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/winnt/FiretrayWin32.jsm");
+var { firetray,
+      FIRETRAY_APPLICATION_ICON_TYPE_THEMED,
+      FIRETRAY_APPLICATION_ICON_TYPE_CUSTOM,
+      FIRETRAY_NOTIFICATION_BLANK_ICON,
+      FIRETRAY_NOTIFICATION_NEWMAIL_ICON,
+      FIRETRAY_NOTIFICATION_CUSTOM_ICON
+} = ChromeUtils.import("resource://firetray/commons.js");
+var { firetray } = ChromeUtils.import("resource://firetray/winnt/FiretrayPopupMenu.jsm");
+var { EMBEDDED_ICON_FILES } = ChromeUtils.import("resource://firetray/icons.jsm");
+//MR firetray.Handler.subscribeLibsForClosing([gdi32, kernel32, shell32, user32]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.StatusIcon");
-
-if ("undefined" == typeof(firetray.Handler))
-  log.error("This module MUST be imported from/after FiretrayHandler !");
-
 
 firetray.StatusIcon = {
   initialized: false,
@@ -50,15 +49,17 @@ firetray.StatusIcon = {
   },
 
   init: function() {
+    log.debug("Init");    
+
     this.loadImages();
     this.create();
-    firetray.Handler.setIconImageDefault();
+    this.setIconImageDefault();
 
-    Cu.import("resource://firetray/winnt/FiretrayPopupMenu.jsm");
     if (!firetray.PopupMenu.init())
       return false;
 
     this.initialized = true;
+    log.debug("Init Done");
     return true;
   },
 
@@ -498,68 +499,67 @@ firetray.StatusIcon = {
     gdi32.DeleteDC(hdcSrc);
 
     return hbmNew;
-  }
+  },
+
+  // Interface
+
+  loadIcons:  function() {},
+
+  firetray.StatusIcon.setIconImageDefault = function() {
+    log.debug("setIconImageDefault");
+    let appIconType = firetray.Utils.prefService.getIntPref("app_icon_type");
+    if (appIconType === FIRETRAY_APPLICATION_ICON_TYPE_THEMED)
+      this.setIcon({hicon:this.icons.get('app')});
+    else if (appIconType === FIRETRAY_APPLICATION_ICON_TYPE_CUSTOM) {
+      this.setIcon({hicon:this.getIconSafe('app-custom')});
+    }
+  },
+
+  setIconImageBlank: function() {
+    log.debug("setIconImageBlank");
+    this.setIcon({hicon:this.icons.get('blank-icon')});
+  },
+  
+  setIconImageNewMail: function() {
+    log.debug("setIconImageDefault");
+    this.setIcon({hicon:this.icons.get('mail-unread')});
+  },
+
+  setIconImageCustom: function(prefname) {
+    log.debug("setIconImageCustom pref="+prefname);
+    let name = this.PREF_TO_ICON_NAME[prefname];
+    this.setIcon({hicon:this.getIconSafe(name)});
+  },
+
+  setIconTooltipDefault: function() {
+    log.debug("setIconTooltipDefault");
+   this.setIcon({tip:this.app.name});
+  },
+
+  setIconTooltip: function(toolTipStr) {
+    log.debug("setIconTooltip");
+    this.setIcon({tip:toolTipStr});
+  },
+
+  setIconText: function(text, color) {
+    let hicon = this.createTextIcon(
+      this.hwndProxy, text, color);
+    log.debug("setIconText icon="+hicon);
+    if (hicon.isNull())
+      log.error("Could not create hicon");
+    this.setIcon({hicon:hicon});
+  },
+
+  setIconVisibility: function(visible) {
+    log.debug("setIconVisibility="+visible);
+    let nid = this.notifyIconData;
+    if (visible)
+      nid.dwState = 0;
+    else
+      nid.dwState = shell32.NIS_HIDDEN;
+    nid.dwStateMask = shell32.NIS_HIDDEN;
+    let rv = shell32.Shell_NotifyIconW(shell32.NIM_MODIFY, nid.address());
+    log.debug("Shell_NotifyIcon MODIFY="+rv+" winLastError="+ctypes.winLastError);
+  },
 
 }; // firetray.StatusIcon
-
-firetray.Handler.loadImageCustom = firetray.StatusIcon.loadImageCustom
-  .bind(firetray.StatusIcon);
-
-firetray.Handler.setIconImageDefault = function() {
-  log.debug("setIconImageDefault");
-  let appIconType = firetray.Utils.prefService.getIntPref("app_icon_type");
-  if (appIconType === FIRETRAY_APPLICATION_ICON_TYPE_THEMED)
-    firetray.StatusIcon.setIcon({hicon:firetray.StatusIcon.icons.get('app')});
-  else if (appIconType === FIRETRAY_APPLICATION_ICON_TYPE_CUSTOM) {
-    firetray.StatusIcon.setIcon({hicon:firetray.StatusIcon.getIconSafe('app-custom')});
-  }
-};
-
-firetray.Handler.setIconImageBlank = function() {
-  log.debug("setIconImageBlank");
-  firetray.StatusIcon.setIcon({hicon:firetray.StatusIcon.icons.get('blank-icon')});
-};
-
-firetray.Handler.setIconImageNewMail = function() {
-  log.debug("setIconImageDefault");
-  firetray.StatusIcon.setIcon({hicon:firetray.StatusIcon.icons.get('mail-unread')});
-};
-
-firetray.Handler.setIconImageCustom = function(prefname) {
-  log.debug("setIconImageCustom pref="+prefname);
-  let name = firetray.StatusIcon.PREF_TO_ICON_NAME[prefname];
-  firetray.StatusIcon.setIcon({hicon:firetray.StatusIcon.getIconSafe(name)});
-};
-
-// firetray.Handler.setIconImageFromFile = firetray.StatusIcon.setIconImageFromFile;
-
-firetray.Handler.setIconTooltip = function(toolTipStr) {
-  log.debug("setIconTooltip");
-  firetray.StatusIcon.setIcon({tip:toolTipStr});
-};
-
-firetray.Handler.setIconTooltipDefault = function() {
-  log.debug("setIconTooltipDefault");
-  firetray.StatusIcon.setIcon({tip:this.app.name});
-};
-
-firetray.Handler.setIconText = function(text, color) {
-  let hicon = firetray.StatusIcon.createTextIcon(
-    firetray.StatusIcon.hwndProxy, text, color);
-  log.debug("setIconText icon="+hicon);
-  if (hicon.isNull())
-    log.error("Could not create hicon");
-  firetray.StatusIcon.setIcon({hicon:hicon});
-};
-
-firetray.Handler.setIconVisibility = function(visible) {
-  log.debug("setIconVisibility="+visible);
-  let nid = firetray.StatusIcon.notifyIconData;
-  if (visible)
-    nid.dwState = 0;
-  else
-    nid.dwState = shell32.NIS_HIDDEN;
-  nid.dwStateMask = shell32.NIS_HIDDEN;
-  let rv = shell32.Shell_NotifyIconW(shell32.NIM_MODIFY, nid.address());
-  log.debug("Shell_NotifyIcon MODIFY="+rv+" winLastError="+ctypes.winLastError);
-};

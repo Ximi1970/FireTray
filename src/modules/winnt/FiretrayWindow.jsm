@@ -7,20 +7,17 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-Cu.import("resource://firetray/ctypes/ctypesMap.jsm");
-Cu.import("resource://firetray/ctypes/winnt/kernel32.jsm");
-Cu.import("resource://firetray/ctypes/winnt/user32.jsm");
-Cu.import("resource://firetray/ctypes/winnt/win32.jsm");
-Cu.import("resource://firetray/winnt/FiretrayWin32.jsm");
-Cu.import("resource://firetray/FiretrayWindow.jsm");
-Cu.import("resource://firetray/commons.js");
-firetray.Handler.subscribeLibsForClosing([user32, kernel32]);
+var { ctypesMap, FIRETRAY_WINDOW_COUNT_MAX, DeleteError } = ChromeUtils.import("resource://firetray/ctypes/ctypesMap.jsm");
+var { kernel32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/kernel32.jsm");
+var { user32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/user32.jsm");
+var { win32 } = ChromeUtils.import("resource://firetray/ctypes/winnt/win32.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/winnt/FiretrayWin32.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/FiretrayWindow.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/commons.js");
+//MR firetray.Handler.subscribeLibsForClosing([user32, kernel32]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.Window");
-
-if ("undefined" == typeof(firetray.Handler))
-  log.error("This module MUST be imported from/after FiretrayHandler !");
 
 const FIRETRAY_XWINDOW_HIDDEN    = 1 << 0; // when minimized also
 const FIRETRAY_XWINDOW_MAXIMIZED = 1 << 1;

@@ -22,23 +22,27 @@ var { ctypesMap,
       DeleteError
     } = ChromeUtils.import("resource://firetray/ctypes/ctypesMap.jsm");
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
-var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
 var { libc } = ChromeUtils.import("resource://firetray/ctypes/linux/libc.jsm");
 var { x11,
       XATOMS_EWMH_WM_STATES,
       XATOMS
     } = ChromeUtils.import("resource://firetray/ctypes/linux/x11.jsm");
 var { FiretrayWindow } = ChromeUtils.import("resource://firetray/FiretrayWindow.jsm");
-firetray.Handler.subscribeLibsForClosing([gobject, gdk, gtk, libc, x11, glib]);
+
+//MR firetray.Handler.subscribeLibsForClosing([gobject, gdk, gtk, libc, x11, glib]);
+
 var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayChat.jsm");
 var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayChatStatusIcon.jsm");
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.Window");
 
+/* //MR
 if ("undefined" == typeof(firetray.Handler))
   log.error("This module MUST be imported from/after FiretrayHandler !");
+*/
 
 const Services2 = {};
 XPCOMUtils.defineLazyServiceGetter(
@@ -59,16 +63,16 @@ var _find_data_t = ctypes.StructType("_find_data_t", [
   { outWindow: gtk.GtkWindow.ptr }
 ]);
 
+firetray.Window = new FiretrayWindow();
+firetray.Window.signals = {'focus-in': {callback: {}, handler: {}}};
+
+
 // NOTE: storing ctypes pointers into a JS object doesn't work: pointers are
 // "evolving" after a while (maybe due to back and forth conversion). So we
 // need to store them into a real ctypes array !
-firetray.Handler.gtkWindows              = new ctypesMap(gtk.GtkWindow.ptr);
-firetray.Handler.gdkWindows              = new ctypesMap(gdk.GdkWindow.ptr);
-firetray.Handler.gtkPopupMenuWindowItems = new ctypesMap(gtk.GtkImageMenuItem.ptr);
-
-
-firetray.Window = new FiretrayWindow();
-firetray.Window.signals = {'focus-in': {callback: {}, handler: {}}};
+firetray.Window.gtkWindows              = new ctypesMap(gtk.GtkWindow.ptr);
+firetray.Window.gdkWindows              = new ctypesMap(gdk.GdkWindow.ptr);
+firetray.Window.gtkPopupMenuWindowItems = new ctypesMap(gtk.GtkImageMenuItem.ptr);
 
 firetray.Window.init = function() {
   let gtkVersionCheck = gtk.gtk_check_version(
@@ -161,7 +165,7 @@ firetray.Window.getGdkWindowFromGtkWindow = function(gtkWin) {
   return null;
 };
 
-if (firetray.Handler.app.widgetTk == "gtk2") {
+if (Services.appinfo.widgetToolkit == "gtk2") {
 
   firetray.Window.getXIDFromGdkWindow = function(gdkWin) {
     return gdk.gdk_x11_drawable_get_xid(ctypes.cast(gdkWin, gdk.GdkDrawable.ptr));
@@ -173,7 +177,7 @@ if (firetray.Handler.app.widgetTk == "gtk2") {
   };
 
 }
-else if (firetray.Handler.app.widgetTk == "gtk3") {
+else if (Services.appinfo.widgetToolkit == "gtk3") {
 
   firetray.Window.getXIDFromGdkWindow = function(gdkWin) {
     return gdk.gdk_x11_window_get_xid(gdkWin);
@@ -186,7 +190,7 @@ else if (firetray.Handler.app.widgetTk == "gtk3") {
 
 }
 else {
-  log.error("Unhandled widgetTk: "+firetray.Handler.app.widgetTk);
+  log.error("Unhandled widgetTk: "+Services.appinfo.widgetToolkit);
 }
 
 firetray.Window.addrPointedByInHex = function(ptr) {
@@ -241,8 +245,8 @@ firetray.Window.unregisterWindowByXID = function(xid) {
 
   if (!delete firetray.Handler.windows[xid])
     throw new DeleteError();
-  firetray.Handler.gtkWindows.remove(xid);
-  firetray.Handler.gdkWindows.remove(xid);
+  firetray.Window.gtkWindows.remove(xid);
+  firetray.Window.gdkWindows.remove(xid);
 
   firetray.PopupMenu.removeWindowItem(xid);
 
@@ -380,14 +384,14 @@ firetray.Window.restoreDesktop = function(xid) {
 };
 
 firetray.Window.getVisibility = function(xid) {
-  let gtkWidget = ctypes.cast(firetray.Handler.gtkWindows.get(xid), gtk.GtkWidget.ptr);
+  let gtkWidget = ctypes.cast(firetray.Window.gtkWindows.get(xid), gtk.GtkWidget.ptr);
   // nsIBaseWin.visibility always true
   return gtk.gtk_widget_get_visible(gtkWidget);
 };
 
 firetray.Window.setVisibility = function(xid, visibility) {
   log.debug("setVisibility="+visibility);
-  let gtkWidget = ctypes.cast(firetray.Handler.gtkWindows.get(xid), gtk.GtkWidget.ptr);
+  let gtkWidget = ctypes.cast(firetray.Window.gtkWindows.get(xid), gtk.GtkWidget.ptr);
   if (visibility)
     gtk.gtk_widget_show_all(gtkWidget);
   else
@@ -416,13 +420,13 @@ firetray.Window.xSendClientMessgeEvent = function(xid, atom, data, dataSize) {
  */
 firetray.Window.activate = function(xid) {
   // broken in KDE ?
-  gtk.gtk_window_present(firetray.Handler.gtkWindows.get(xid));
+  gtk.gtk_window_present(firetray.Window.gtkWindows.get(xid));
   log.debug("window raised");
 };
 
 firetray.Window.setUrgency = function(xid, urgent) {
   log.debug("setUrgency: "+urgent);
-  gtk.gtk_window_set_urgency_hint(firetray.Handler.gtkWindows.get(xid), urgent);
+  gtk.gtk_window_set_urgency_hint(firetray.Window.gtkWindows.get(xid), urgent);
 };
 
 /**
@@ -546,7 +550,7 @@ firetray.Window.filterWindow = function(xev, gdkEv, data) {
 
   case x11.MapNotify:
     log.debug("MapNotify");
-    let gdkWinStateOnMap = gdk.gdk_window_get_state(firetray.Handler.gdkWindows.get(xid));
+    let gdkWinStateOnMap = gdk.gdk_window_get_state(firetray.Window.gdkWindows.get(xid));
     log.debug("gdkWinState="+gdkWinStateOnMap+" for xid="+xid);
     let win = firetray.Handler.windows[xid];
     if (firetray.Handler.appStarted && !win.visible) {
@@ -591,7 +595,7 @@ firetray.Window.startupFilter = function(xev, gdkEv, data) {
   // *before* the window is actually mapped, in order to minimize it before
   // it's shown.
   if (xany.contents.type === x11.MapNotify) {
-    gdk.gdk_window_remove_filter(firetray.Handler.gdkWindows.get(xid),
+    gdk.gdk_window_remove_filter(firetray.Window.gdkWindows.get(xid),
                                  firetray.Handler.windows[xid].startupFilterCb, null);
     if (firetray.Utils.prefService.getBoolPref('start_hidden')) {
       log.debug("start_hidden");
@@ -618,14 +622,14 @@ firetray.Window.attachOnFocusInCallback = function(xid) {
     firetray.Window.onFocusIn, null, FIRETRAY_CB_SENTINEL);
   this.signals['focus-in'].callback[xid] = callback;
   let handlerId = gobject.g_signal_connect(
-    firetray.Handler.gtkWindows.get(xid), "focus-in-event", callback, null);
+    firetray.Window.gtkWindows.get(xid), "focus-in-event", callback, null);
   log.debug("focus-in handler="+handlerId);
   this.signals['focus-in'].handler[xid] = handlerId;
 };
 
 firetray.Window.detachOnFocusInCallback = function(xid) {
   log.debug("detachOnFocusInCallback xid="+xid);
-  let gtkWin = firetray.Handler.gtkWindows.get(xid);
+  let gtkWin = firetray.Window.gtkWindows.get(xid);
   gobject.g_signal_handler_disconnect(
     gtkWin,
     gobject.gulong(this.signals['focus-in'].handler[xid])
@@ -656,26 +660,26 @@ firetray.Window.onFocusIn = function(widget, event, data) {
 ///////////////////////// firetray.Handler overriding /////////////////////////
 
 /** debug facility */
-firetray.Handler.dumpWindows = function() {
+firetray.Window.dumpWindows = function() {
   log.debug(firetray.Handler.windowsCount);
-  for (let winId in firetray.Handler.windows) log.info(winId+"="+firetray.Handler.gtkWindows.get(winId));
+  for (let winId in firetray.Handler.windows) log.info(winId+"="+firetray.Window.gtkWindows.get(winId));
 };
 
-firetray.Handler.registerWindow = function(win) {
+firetray.Window.registerWindow = function(win) {
   log.debug("register window");
 
   // register
   let [baseWin, gtkWin, gdkWin, xid] = firetray.Window.getWindowsFromChromeWindow(win);
-  this.windows[xid] = {};
-  this.windows[xid].chromeWin = win;
-  this.windows[xid].baseWin = baseWin;
-  Object.defineProperties(this.windows[xid], {
+  firetray.Handler.windows[xid] = {};
+  firetray.Handler.windows[xid].chromeWin = win;
+  firetray.Handler.windows[xid].baseWin = baseWin;
+  Object.defineProperties(firetray.Handler.windows[xid], {
     "visible": { get: function(){return firetray.Window.getVisibility(xid);} }
   });
   firetray.Window.correctSubscribedEventMasks(gdkWin);
   try {
-    this.gtkWindows.insert(xid, gtkWin);
-    this.gdkWindows.insert(xid, gdkWin);
+    firetray.Window.gtkWindows.insert(xid, gtkWin);
+    firetray.Window.gdkWindows.insert(xid, gdkWin);
     firetray.PopupMenu.addWindowItem(xid);
   } catch (x) {
     if (x.name === "RangeError") // instanceof not working :-(
@@ -691,13 +695,13 @@ firetray.Handler.registerWindow = function(win) {
      // delete_event_cb (in gtk2/nsWindow.cpp), but we prefer to use the
      // provided 'close' JS event
 
-    this.windows[xid].filterWindowCb = gdk.GdkFilterFunc_t(
+    firetray.Handler.windows[xid].filterWindowCb = gdk.GdkFilterFunc_t(
       firetray.Window.filterWindow, null, FIRETRAY_CB_SENTINEL);
-    gdk.gdk_window_add_filter(gdkWin, this.windows[xid].filterWindowCb, null);
+    gdk.gdk_window_add_filter(gdkWin, firetray.Handler.windows[xid].filterWindowCb, null);
     if (!firetray.Handler.appStarted) {
-      this.windows[xid].startupFilterCb = gdk.GdkFilterFunc_t(
+      firetray.Handler.windows[xid].startupFilterCb = gdk.GdkFilterFunc_t(
         firetray.Window.startupFilter, null, FIRETRAY_CB_SENTINEL);
-      gdk.gdk_window_add_filter(gdkWin, this.windows[xid].startupFilterCb, null);
+      gdk.gdk_window_add_filter(gdkWin, firetray.Handler.windows[xid].startupFilterCb, null);
     }
 
     firetray.Window.attachOnFocusInCallback(xid);
@@ -715,20 +719,25 @@ firetray.Handler.registerWindow = function(win) {
   return xid;
 };
 
-firetray.Handler.unregisterWindow = function(win) {
+firetray.Window.unregisterWindow = function(win) {
   log.debug("unregister window");
   let xid = firetray.Window.getRegisteredWinIdFromChromeWindow(win);
   return firetray.Window.unregisterWindowByXID(xid);
 };
 
-firetray.Handler.showWindow = firetray.Window.show;
-firetray.Handler.hideWindow = firetray.Window.hide;
+firetray.Window.showWindow = function(win) {
+  firetray.Window.show(win);
+};
 
-firetray.Handler.showAllWindowsAndActivate = firetray.Window.showAllWindowsAndActivate;
+firetray.Window.hideWindow = function(win) {
+  firetray.Window.hide(win);
+};
+
+//MR firetray.Handler.showAllWindowsAndActivate = firetray.Window.showAllWindowsAndActivate;
 
 /* NOTE: gtk_window_is_active() not reliable, and _NET_ACTIVE_WINDOW may not
    always be set before 'focus-in-event' (gnome-shell/mutter 3.4.1). */
-firetray.Handler.getActiveWindow = function() {
+firetray.Window.getActiveWindow = function() {
   let gdkActiveWin = gdk.gdk_screen_get_active_window(gdk.gdk_screen_get_default()); // inspects _NET_ACTIVE_WINDOW
   log.debug("gdkActiveWin="+gdkActiveWin);
   if (firetray.js.strEquals(gdkActiveWin, 'GdkWindow.ptr(ctypes.UInt64("0x0"))'))
@@ -738,7 +747,7 @@ firetray.Handler.getActiveWindow = function() {
   return activeWin;
 };
 
-firetray.Handler.windowGetAttention = function(winId) {
+firetray.Window.windowGetAttention = function(winId) {
   firetray.Window.setUrgency(winId, true);
 };
 

@@ -2,6 +2,7 @@
 
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
+var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { OS } = ChromeUtils.import("resource://gre/modules/osfile.jsm");
 var { firetray,
@@ -16,20 +17,17 @@ var { EMBEDDED_ICON_FILES } = ChromeUtils.import("resource://firetray/icons.jsm"
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
 // FIXME: can't subscribeLibsForClosing([appind])
 // https://bugs.launchpad.net/ubuntu/+source/firefox/+bug/1393256
-var { appind } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/appindicator.jsm");
-var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gdk.jsm");
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+firetray.Handler.app.widgetTk+"/gtk.jsm");
+var { appind } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/appindicator.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
 var { cairo } = ChromeUtils.import("resource://firetray/ctypes/linux/cairo.jsm");
 var { pango, pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pango.jsm");
 var { pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pangocairo.jsm");
-firetray.Handler.subscribeLibsForClosing([gobject, gdk, gtk, cairo, pango, pangocairo]);
+
+//MR firetray.Handler.subscribeLibsForClosing([gobject, gdk, gtk, cairo, pango, pangocairo]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.AppIndicator");
-
-if ("undefined" == typeof(firetray.StatusIcon))
-  log.error("This module MUST be imported from/after FiretrayStatusIcon !");
-
 
 firetray.AppIndicator = {
   initialized: false,
@@ -39,6 +37,8 @@ firetray.AppIndicator = {
   MIN_FONT_SIZE: 4,
   
   init: function() {
+    log.debug("Init");
+
     this.indicator = appind.app_indicator_new(
       FIRETRAY_APPINDICATOR_ID,
       firetray.StatusIcon.defaultAppIconName,
@@ -60,34 +60,38 @@ firetray.AppIndicator = {
     }
 
     this.attachMiddleClickCallback();
-    firetray.Handler.setIconTooltipDefault();
+    firetray.StatusIcon.setIconTooltipDefault();
 
     this.initialized = true;
+    log.debug("Init Done");
     return true;
   },
 
   shutdown: function() {
-    log.debug("Disabling AppIndicator");
+    log.debug("Shutdown");
+
     gobject.g_object_unref(this.indicator);
-    this.initialized = false;
     OS.File.remove(this.tempfile);
+
+    this.initialized = false;
+    log.debug("Shutdown Done");
   },
 
   addCallbacks: function() {
     this.callbacks.connChanged = appind.ConnectionChangedCb_t(
-      firetray.AppIndicator.onConnectionChanged); // void return, no sentinel
+      this.onConnectionChanged); // void return, no sentinel
     gobject.g_signal_connect(this.indicator, "connection-changed",
-                             firetray.AppIndicator.callbacks.connChanged, null);
+                             this.callbacks.connChanged, null);
 
     this.callbacks.onScroll = appind.OnScrollCb_t(
-      firetray.AppIndicator.onScroll); // void return, no sentinel
+      this.onScroll); // void return, no sentinel
     gobject.g_signal_connect(this.indicator, "scroll-event",
-                             firetray.AppIndicator.callbacks.onScroll, null);
+                             this.callbacks.onScroll, null);
 
     this.callbacks.onActivate = appind.OnActivateCb_t(
-      firetray.AppIndicator.onActivate); // void return, no sentinel
+      this.onActivate); // void return, no sentinel
     gobject.g_signal_connect(this.indicator, "activate-event",
-                             firetray.AppIndicator.callbacks.onActivate, null);
+                             this.callbacks.onActivate, null);
   },
 
   attachMiddleClickCallback: function() {
@@ -126,85 +130,80 @@ firetray.AppIndicator = {
     firetray.Handler.showHideAllWindows();
   },
 
-};  // AppIndicator
+  // Interface
 
-firetray.StatusIcon.initImpl =
-  firetray.AppIndicator.init.bind(firetray.AppIndicator);
+  loadIcons:  function() {},
 
-firetray.StatusIcon.shutdownImpl =
-  firetray.AppIndicator.shutdown.bind(firetray.AppIndicator);
+  setIconImageDefault: function() {
+    log.debug("setIconImageDefault");
+    appind.app_indicator_set_icon_full(this.indicator,
+                                      firetray.StatusIcon.defaultAppIconName,
+                                      firetray.Handler.app.name);
+  },
 
+  setIconImageBlank: function() {
+    log.debug("setIconImageBlank");
+    let byte_buf = gobject.guchar.array()(EMBEDDED_ICON_FILES['blank-icon'].bin);
+    let loader = gdk.gdk_pixbuf_loader_new();
+    if (loader != null) {
+      gdk.gdk_pixbuf_loader_write(loader,byte_buf,byte_buf.length,null);
+      gdk.gdk_pixbuf_loader_close(loader,null);
+      let dest = gdk.gdk_pixbuf_loader_get_pixbuf(loader);
+      if (dest != null) {
+        gobject.g_object_ref(dest);
 
-firetray.Handler.setIconImageDefault = function() {
-  log.debug("setIconImageDefault");
-  appind.app_indicator_set_icon_full(firetray.AppIndicator.indicator,
-                                     firetray.StatusIcon.defaultAppIconName,
-                                     firetray.Handler.app.name);
-};
+        gdk.gdk_pixbuf_save(dest, this.tempfile, "png", null, null);
 
-firetray.Handler.setIconImageBlank = function() {
-  log.debug("setIconImageBlank");
-  let byte_buf = gobject.guchar.array()(EMBEDDED_ICON_FILES['blank-icon'].bin);
-  let loader = gdk.gdk_pixbuf_loader_new();
-  if (loader != null) {
-    gdk.gdk_pixbuf_loader_write(loader,byte_buf,byte_buf.length,null);
-    gdk.gdk_pixbuf_loader_close(loader,null);
-    let dest = gdk.gdk_pixbuf_loader_get_pixbuf(loader);
-    if (dest != null) {
-      gobject.g_object_ref(dest);
+        gobject.g_object_unref(dest);
+        gobject.g_object_unref(loader);
 
-      gdk.gdk_pixbuf_save(dest, firetray.AppIndicator.tempfile, "png", null, null);
+        appind.app_indicator_set_icon_full(
+          this.indicator,
+          this.tempfile,
+          firetray.Handler.app.name);
+      } else {
+        gobject.g_object_unref(loader);
 
-      gobject.g_object_unref(dest);
-      gobject.g_object_unref(loader);
-
-      appind.app_indicator_set_icon_full(
-        firetray.AppIndicator.indicator,
-        firetray.AppIndicator.tempfile,
-        firetray.Handler.app.name);
+        this.setIconImageDefault();     
+      }
     } else {
-      gobject.g_object_unref(loader);
-
-      firetray.Handler.setIconImageDefault();     
+        this.setIconImageDefault();    
     }
-  } else {
-      firetray.Handler.setIconImageDefault();    
-  }
-};
+  },
 
-firetray.Handler.setIconImageNewMail = function() {
-  log.debug("setIconImageNewMail");
-  appind.app_indicator_set_icon_full(
-    firetray.AppIndicator.indicator,
-    firetray.StatusIcon.defaultNewMailIconName,
-    firetray.Handler.app.name);
-};
+  setIconImageNewMail: function() {
+    log.debug("setIconImageNewMail");
+    appind.app_indicator_set_icon_full(
+      this.indicator,
+      this.defaultNewMailIconName,
+      firetray.Handler.app.name);
+  },
 
-firetray.Handler.setIconImageCustom = function(prefname) {
-  let prefCustomIconPath = firetray.Utils.prefService.getCharPref(prefname);
-  // Undocumented: ok to pass a *path* instead of an icon name! Otherwise we
-  // should be changing the default icons (which is maybe a better
-  // implementation anyway)...
-  appind.app_indicator_set_icon_full(
-    firetray.AppIndicator.indicator, prefCustomIconPath,
-    firetray.Handler.app.name);
-};
+  setIconImageCustom: function(prefname) {
+    let prefCustomIconPath = firetray.Utils.prefService.getCharPref(prefname);
+    // Undocumented: ok to pass a *path* instead of an icon name! Otherwise we
+    // should be changing the default icons (which is maybe a better
+    // implementation anyway)...
+    appind.app_indicator_set_icon_full(
+      this.indicator, prefCustomIconPath,
+      firetray.Handler.app.name);
+  },
 
-// No tooltips in AppIndicator
-// https://bugs.launchpad.net/indicator-application/+bug/527458
-firetray.Handler.setIconTooltip = function(toolTipStr) {
-  log.debug("setIconTooltip");
-  if (!firetray.AppIndicator.indicator)
-    return false;
-  firetray.PopupMenu.setItemLabel(firetray.PopupMenu.menuItem.tip,
-                                  toolTipStr);
-  return true;
-};
+  // No tooltips in AppIndicator
+  // https://bugs.launchpad.net/indicator-application/+bug/527458
+  setIconTooltip: function(toolTipStr) {
+    log.debug("setIconTooltip");
+    if (!this.indicator)
+      return false;
+    firetray.PopupMenu.setItemLabel(firetray.PopupMenu.menuItem.tip,
+                                    toolTipStr);
+    return true;
+  },
 
-// AppIndicator doesn't support pixbuf https://bugs.launchpad.net/bugs/812067
-//
-// sajan
-firetray.Handler.setIconText = function(text, color) { 
+  // AppIndicator doesn't support pixbuf https://bugs.launchpad.net/bugs/812067
+  //
+  // sajan
+  setIconText: function(text, color) { 
     log.debug("setIconText: " + text);
     log.debug("setIconText, Temp: " + firetray.AppIndicator.tempfile);
 
@@ -274,8 +273,7 @@ firetray.Handler.setIconText = function(text, color) {
     let h = gdk.gdk_pixbuf_get_height(dest);
 
     // prepare colors/alpha
-/* FIXME: draw everything with cairo when dropping gtk2 support. Use
- gdk_pixbuf_get_from_surface(). */
+    // FIXME: draw everything with cairo when dropping gtk2 support. Use gdk_pixbuf_get_from_surface().
 if (firetray.Handler.app.widgetTk == "gtk2") {
     var colorMap = gdk.gdk_screen_get_system_colormap(gdk.gdk_screen_get_default());
     var visual = gdk.gdk_colormap_get_visual(colorMap);
@@ -402,15 +400,18 @@ else {
     }
     
     return true;
-};
+  },
 
-firetray.Handler.setIconVisibility = function(visible) {
-  if (!firetray.AppIndicator.indicator)
-    return false;
 
-  let status = visible ?
-        appind.APP_INDICATOR_STATUS_ACTIVE :
-        appind.APP_INDICATOR_STATUS_PASSIVE;
-  appind.app_indicator_set_status(firetray.AppIndicator.indicator, status);
-  return true;
-};
+  setIconVisibility: function(visible) {
+    if (!this.indicator)
+      return false;
+
+    let status = visible ?
+          appind.APP_INDICATOR_STATUS_ACTIVE :
+          appind.APP_INDICATOR_STATUS_PASSIVE;
+    appind.app_indicator_set_status(this.indicator, status);
+    return true;
+  },
+
+};  // AppIndicator
