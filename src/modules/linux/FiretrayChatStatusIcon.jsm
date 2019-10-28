@@ -8,6 +8,7 @@ var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { firetray,
+      FIRETRAY_GTK,
       FIRETRAY_CHAT_ICON_BLINK_STYLE_NORMAL,
       FIRETRAY_CHAT_ICON_BLINK_STYLE_FADE,
       FIRETRAY_IM_STATUS_OFFLINE,
@@ -21,8 +22,8 @@ var { ctypesMap,
     } = ChromeUtils.import("resource://firetray/ctypes/ctypesMap.jsm");
 var { gio } = ChromeUtils.import("resource://firetray/ctypes/linux/gio.jsm");
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
-var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gdk.jsm");
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gtk.jsm");
 var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayGtkIcons.jsm");
 var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayWindow.jsm");
 

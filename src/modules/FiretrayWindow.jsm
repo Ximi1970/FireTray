@@ -8,11 +8,6 @@ var { firetray } = ChromeUtils.import("resource://firetray/commons.js");
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.FiretrayWindow");
 
-/* //MR
-if ("undefined" == typeof(firetray.Handler))
-  log.error("This module MUST be imported from/after FiretrayHandler !");
-*/
-
 function FiretrayWindow () {}
 FiretrayWindow.prototype = {
 

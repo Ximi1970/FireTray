@@ -7,14 +7,16 @@ const Cu = Components.utils;
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-var { firetray } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
-var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gdk.jsm");
+var { firetray,
+      FIRETRAY_GTK
+    } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gdk.jsm");
 var { gio } = ChromeUtils.import("resource://firetray/ctypes/linux/gio.jsm");
 var { glib } = ChromeUtils.import("resource://firetray/ctypes/linux/glib.jsm");
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
 var { libc } = ChromeUtils.import("resource://firetray/ctypes/linux/libc.jsm");
 var { x11 } = ChromeUtils.import("resource://firetray/ctypes/linux/x11.jsm");
-var { appind } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/appindicator.jsm");
+var { appind } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/appindicator.jsm");
 //MR firetray.Handler.subscribeLibsForClosing([gdk, gio, glib, gobject]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");

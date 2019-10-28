@@ -5,9 +5,11 @@ var EXPORTED_SYMBOLS = [ "firetray" ];
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
-var { firetray } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
+var { firetray,
+      FIRETRAY_GTK
+    } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gtk.jsm");
 //firetray.Handler.subscribeLibsForClosing([gobject, gtk]);
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");

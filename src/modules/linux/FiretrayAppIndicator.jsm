@@ -6,6 +6,7 @@ var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { OS } = ChromeUtils.import("resource://gre/modules/osfile.jsm");
 var { firetray,
+      FIRETRAY_GTK,
       FIRETRAY_APPINDICATOR_ID,
       FIRETRAY_MIDDLE_CLICK_ACTIVATE_LAST,
       FIRETRAY_MIDDLE_CLICK_SHOW_HIDE,
@@ -17,9 +18,9 @@ var { EMBEDDED_ICON_FILES } = ChromeUtils.import("resource://firetray/icons.jsm"
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
 // FIXME: can't subscribeLibsForClosing([appind])
 // https://bugs.launchpad.net/ubuntu/+source/firefox/+bug/1393256
-var { appind } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/appindicator.jsm");
-var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gdk.jsm");
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
+var { appind } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/appindicator.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gtk.jsm");
 var { cairo } = ChromeUtils.import("resource://firetray/ctypes/linux/cairo.jsm");
 var { pango, pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pango.jsm");
 var { pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pangocairo.jsm");

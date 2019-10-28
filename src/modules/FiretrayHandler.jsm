@@ -10,6 +10,7 @@ const Cu = Components.utils;
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { firetray,
+      FIRETRAY_GTK,
       FIRETRAY_PREF_BRANCH,
       FIRETRAY_OS_SUPPORT,
       FIRETRAY_APP_DB,
@@ -18,13 +19,6 @@ var { firetray,
       FIRETRAY_DELAY_NOWAIT_MILLISECONDS
     } = ChromeUtils.import("resource://firetray/commons.js");
 var { PrefListener } = ChromeUtils.import("resource://firetray/PrefListener.jsm");
-
-/**
- * firetray namespace.
- */
-if ("undefined" == typeof(firetray)) {
-  var firetray = {};
-};
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.Handler");
@@ -36,10 +30,10 @@ var { firetray } = ChromeUtils.import("resource://firetray/"+Services.appinfo.OS
 log.debug("FiretrayWindow "+Services.appinfo.OS.toLowerCase()+" imported");
 
 var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
+var { IOUtils } = ChromeUtils.import("resource:///modules/IOUtils.js");
 var { firetray } = ChromeUtils.import("resource://firetray/FiretrayMessaging.jsm");
 var { firetray } = ChromeUtils.import("resource://firetray/"+Services.appinfo.OS.toLowerCase()+"/FiretrayChat.jsm");
-var { IOUtils } = ChromeUtils.import("resource:///modules/IOUtils.js");
- 
+
 /**
  * Singleton object and abstraction for windows and tray icon management.
  */
@@ -76,7 +70,7 @@ firetray.Handler = {
     version: Services.appinfo.platformVersion,
     ABI: Services.appinfo.XPCOMABI,
     OS: Services.appinfo.OS.toLowerCase(), // "WINNT", "Linux", "Darwin"
-    widgetTk: Services.appinfo.widgetToolkit,
+    widgetTk: FIRETRAY_GTK,
   };})(),
   support: {chat: false, winnt: false},
 
@@ -102,14 +96,6 @@ firetray.Handler = {
       this.app.OS = "linux";
     }
 
-/*
-    var { firetray } = ChromeUtils.import("resource://firetray/"+this.app.OS+"/FiretrayStatusIcon.jsm");
-    log.debug("FiretrayStatusIcon "+this.app.OS+" imported");
-    log.info("useAppind="+firetray.Handler.useAppind);
-    var { firetray } = ChromeUtils.import("resource://firetray/"+this.app.OS+"/FiretrayWindow.jsm");
-    log.debug("FiretrayWindow "+this.app.OS+" imported");
-*/
-
     this.support['chat']  =
       ['linux'].indexOf(this.app.OS) > -1 && !this.useAppind;
     this.support['winnt'] =
@@ -134,8 +120,6 @@ firetray.Handler = {
 
     if (this.inMailApp) {
       try {
-//MR        Cu.import("resource:///modules/MailServices.jsm");
-//MR        Cu.import("resource://firetray/FiretrayMessaging.jsm");
         if (firetray.Utils.prefService.getBoolPref("mail_notification_enabled")) {
           firetray.Messaging.init();
           firetray.Messaging.updateMsgCountWithCb();
@@ -150,8 +134,6 @@ firetray.Handler = {
     log.info('isChatProvided='+chatIsProvided);
     if (chatIsProvided) {
       if (this.support['chat']) {
-//MR        Cu.import("resource://firetray/FiretrayMessaging.jsm"); // needed for existsChatAccount
-//MR        Cu.import("resource://firetray/"+this.app.OS+"/FiretrayChat.jsm");
         firetray.Utils.addObservers(firetray.Handler, [
           "account-added", "account-removed"]);
         if (firetray.Utils.prefService.getBoolPref("chat_icon_enable") &&
@@ -236,7 +218,6 @@ firetray.Handler = {
   },
 
   readTBRestoreWindowsCount: function() {
-//MR    Cu.import("resource:///modules/IOUtils.js");
     let sessionFile = Services.dirsvc.get("ProfD", Ci.nsIFile);
     sessionFile.append("session.json");
     var initialState = null;
@@ -343,7 +324,7 @@ firetray.Handler = {
     }
   },
 
-  // Interface
+  // Interface StatusIcon
 
   loadIcons: function() {
     firetray.StatusIcon.loadIcons();
@@ -386,6 +367,14 @@ firetray.Handler = {
   },
   
 
+  // Interface Windows
+
+  gtkWindows: firetray.Window.gtkWindows,
+  
+  gdkWindows: firetray.Window.gdkWindows,
+  
+  gtkPopupMenuWindowItems: firetray.Window.gtkPopupMenuWindowItems,
+  
   // these get overridden in OS-specific Icon/Window handlers
 
   
@@ -718,8 +707,6 @@ firetray.MailChatPrefListener = new PrefListener(
 
       if (Services.prefs.getBoolPref("mail.chat.enabled")) {
         if (!firetray.Chat) {
-//MR          Cu.import("resource://firetray/FiretrayMessaging.jsm"); // needed for existsChatAccount
-//MR          Cu.import("resource://firetray/linux/FiretrayChat.jsm");
           firetray.Utils.addObservers(firetray.Handler, [
             "account-added", "account-removed"]);
         }

@@ -3,8 +3,10 @@
 var EXPORTED_SYMBOLS = [ "firetray" ];
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
-var { firetray } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
+var { firetray,
+      FIRETRAY_GTK
+    } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gtk.jsm");
 var { glib } = ChromeUtils.import("resource://firetray/ctypes/linux/glib.jsm");
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
 //MR firetray.Handler.subscribeLibsForClosing([gtk]);

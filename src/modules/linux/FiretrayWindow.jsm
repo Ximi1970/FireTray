@@ -15,6 +15,7 @@ var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { firetray,
+      FIRETRAY_GTK,
       FIRETRAY_CB_SENTINEL
     } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
 var { ctypesMap,
@@ -22,8 +23,8 @@ var { ctypesMap,
       DeleteError
     } = ChromeUtils.import("resource://firetray/ctypes/ctypesMap.jsm");
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
-var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gdk.jsm");
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gtk.jsm");
 var { libc } = ChromeUtils.import("resource://firetray/ctypes/linux/libc.jsm");
 var { x11,
       XATOMS_EWMH_WM_STATES,
@@ -165,7 +166,7 @@ firetray.Window.getGdkWindowFromGtkWindow = function(gtkWin) {
   return null;
 };
 
-if (Services.appinfo.widgetToolkit == "gtk2") {
+if (FIRETRAY_GTK == "gtk2") {
 
   firetray.Window.getXIDFromGdkWindow = function(gdkWin) {
     return gdk.gdk_x11_drawable_get_xid(ctypes.cast(gdkWin, gdk.GdkDrawable.ptr));
@@ -177,7 +178,7 @@ if (Services.appinfo.widgetToolkit == "gtk2") {
   };
 
 }
-else if (Services.appinfo.widgetToolkit == "gtk3") {
+else if (FIRETRAY_GTK == "gtk3") {
 
   firetray.Window.getXIDFromGdkWindow = function(gdkWin) {
     return gdk.gdk_x11_window_get_xid(gdkWin);
@@ -190,7 +191,7 @@ else if (Services.appinfo.widgetToolkit == "gtk3") {
 
 }
 else {
-  log.error("Unhandled widgetTk: "+Services.appinfo.widgetToolkit);
+  log.error("Unhandled widgetTk: "+FIRETRAY_GTK);
 }
 
 firetray.Window.addrPointedByInHex = function(ptr) {

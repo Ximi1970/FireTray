@@ -6,6 +6,7 @@ var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 var { OS } = ChromeUtils.import("resource://gre/modules/osfile.jsm");
 var { firetray,
+      FIRETRAY_GTK,
       FIRETRAY_CB_SENTINEL,
       FIRETRAY_MIDDLE_CLICK_ACTIVATE_LAST,
       FIRETRAY_MIDDLE_CLICK_SHOW_HIDE,
@@ -17,8 +18,8 @@ var { firetray,
     } = ChromeUtils.import("resource://firetray/commons.js"); // first for Handler.app !
 var { EMBEDDED_ICON_FILES } = ChromeUtils.import("resource://firetray/icons.jsm");
 var { gobject, glib } = ChromeUtils.import("resource://firetray/ctypes/linux/gobject.jsm");
-var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gdk.jsm");
-var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+Services.appinfo.widgetToolkit+"/gtk.jsm");
+var { gdk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gdk.jsm");
+var { gtk } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/gtk.jsm");
 var { cairo } = ChromeUtils.import("resource://firetray/ctypes/linux/cairo.jsm");
 var { gio } = ChromeUtils.import("resource://firetray/ctypes/linux/gio.jsm");
 var { pango, pangocairo } = ChromeUtils.import("resource://firetray/ctypes/linux/pango.jsm");
