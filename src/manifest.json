@@ -2,9 +2,9 @@
   "manifest_version": 2,
   "name": "FireTray",
   "description": "A system tray extension.",
-  "version": "0.7.0pre1",
-  "author": "Hua Luo, Francesco Solero, Foudil BRÉTEL",
-  "homepage_url": "https://github.com/foudfou/firetray/",
+  "version": "1.0.0pre1",
+  "author": "Hua Luo, Francesco Solero, Foudil BRÉTEL, Maxime Rijnders",
+  "homepage_url": "https://github.com/Ximi1970/firetray/",
   "legacy": true,
   "applications": {
     "gecko": {

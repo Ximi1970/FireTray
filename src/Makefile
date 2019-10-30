@@ -65,11 +65,11 @@ profile_locations := \
 # The license file
 license := LICENSE
 
-# The install.rdf file.
-install_rdf := install.rdf
+# The manifest.json file.
+manifest_json := manifest.json
 
-# Version fetched from install.rdf
-VERSION := $(shell awk -F '[<>]' '/em:version/{print $$3}' $(install_rdf))
+# Version fetched from manifest.json
+VERSION := $(shell awk -F '["]' '/"version"/{print $$4}' $(manifest_json))
 
 # The target XPI files.
 xpi_file := $(extension_name)-$(VERSION).xpi
@@ -79,9 +79,6 @@ xpi_deployed := $(extension_name).xpi
 
 # The chrome.manifest file.
 chrome_manifest := chrome.manifest
-
-# The manifest.json file.
-manifest_json := manifest.json
 
 # The preferences dir.
 preferences_dir := defaults/preferences
@@ -128,7 +125,6 @@ components_sources := $(wildcard $(components_dir)/*.js)
 # The sources for the XPI file. Uses variables defined in the included
 # Makefiles.
 xpi_includes := $(license) \
-             $(install_rdf) \
              $(chrome_manifest) \
              $(manifest_json) \
              $(preferences_dir)/prefs.js \
@@ -164,10 +160,6 @@ $(build_dir)/%: %
 
 $(build_dir)/$(license): ../$(license)
 	@cp -f $< $@
-
-# Inject SCM revision stamp. This may be useful in case we mess up with tags
-$(build_dir)/$(install_rdf): $(install_rdf)
-	@sed 's/\/\* SCM-REVISION:/\/* SCM-REVISION: $(SCM-REVISION) /' $< > $@
 
 # Debug calls are removed for performance.
 # NOTE: we could also use m4 for filtering source files...
