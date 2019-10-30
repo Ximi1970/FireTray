@@ -18,7 +18,7 @@ firetayCommandLineHandler.prototype = {
     entry: "m-firetray"
   }],
 
-  QueryInterface: XPCOMUtils.generateQI([
+  QueryInterface: ChromeUtils.generateQI([
     Ci.nsICommandLineHandler
   ]),
 
