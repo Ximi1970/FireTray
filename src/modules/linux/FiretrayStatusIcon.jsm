@@ -126,9 +126,10 @@ firetray.StatusIcon = {
   defaultAppIconName: null,
   defaultNewMailIconName: null,
   canAppind: canAppind,
+  appindEnable: appindEnable(),
 
   initImpl: function() {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       return firetray.AppIndicator.init();
     } else {
       return firetray.GtkStatusIcon.init();
@@ -136,7 +137,7 @@ firetray.StatusIcon = {
   },
   
   shutdownImpl: function() {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       firetray.AppIndicator.shutdown();
     } else {
       firetray.GtkStatusIcon.shutdown();
@@ -201,10 +202,6 @@ firetray.StatusIcon = {
     return newMailIconNames;
   },
 
-  appindEnable: function() {
-    return appindEnable();
-  },
-
   onScroll: function(direction) {
     if (!firetray.Utils.prefService.getBoolPref("scroll_hides"))
       return false;
@@ -238,7 +235,7 @@ firetray.StatusIcon = {
   // Interface
 
   loadIcons: function() {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       firetray.AppIndicator.loadIcons();
     } else {
       firetray.GtkStatusIcon.loadIcons();      
@@ -248,7 +245,7 @@ firetray.StatusIcon = {
   loadImageCustom:  function(prefname) {},
 
   setIconImageDefault: function() {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       firetray.AppIndicator.setIconImageDefault();
     } else {
       firetray.GtkStatusIcon.setIconImageDefault();      
@@ -256,7 +253,7 @@ firetray.StatusIcon = {
   },
 
   setIconImageBlank: function() {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       firetray.AppIndicator.setIconImageBlank();
     } else {
       firetray.GtkStatusIcon.setIconImageBlank();      
@@ -264,7 +261,7 @@ firetray.StatusIcon = {
   },
 
   setIconImageNewMail: function() {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       firetray.AppIndicator.setIconImageNewMail();
     } else {
       firetray.GtkStatusIcon.setIconImageNewMail();      
@@ -272,7 +269,7 @@ firetray.StatusIcon = {
   },
 
   setIconImageCustom: function(prefname) {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       firetray.AppIndicator.setIconImageCustom(prefname);
     } else {
       firetray.GtkStatusIcon.setIconImageCustom(prefname);      
@@ -286,7 +283,7 @@ firetray.StatusIcon = {
   },
 
   setIconTooltip: function(toolTipStr) {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       firetray.AppIndicator.setIconTooltip(toolTipStr);
     } else {
       firetray.GtkStatusIcon.setIconTooltip(toolTipStr);      
@@ -294,7 +291,7 @@ firetray.StatusIcon = {
   },
 
   setIconTooltip: function(toolTipStr) {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       firetray.AppIndicator.setIconTooltip(toolTipStr);
     } else {
       firetray.GtkStatusIcon.setIconTooltip(toolTipStr);      
@@ -302,7 +299,7 @@ firetray.StatusIcon = {
   },
 
   setIconText: function(text, color) {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       firetray.AppIndicator.setIconText(text, color);
     } else {
       firetray.GtkStatusIcon.setIconText(text, color);      
@@ -310,7 +307,7 @@ firetray.StatusIcon = {
   },
 
   setIconVisibility: function(visible) {
-    if (this.appindEnable()) {
+    if (this.appindEnable) {
       firetray.AppIndicator.setIconVisibility(visible);
     } else {
       firetray.GtkStatusIcon.setIconVisibility(visible);      
