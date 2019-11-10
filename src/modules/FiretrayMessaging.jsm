@@ -153,22 +153,26 @@ firetray.Messaging = {
       let excludedFoldersFlags = firetray.Utils.prefService.getIntPref("excluded_folders_flags");
       let onlyFavorites = firetray.Utils.prefService.getBoolPref("only_favorite_folders");
       let msgCountType = firetray.Utils.prefService.getIntPref("message_count_type");
-
+log.debug("onMsgCountChange 1");
       if (!(item.flags & excludedFoldersFlags)) {
         let prop = property.toString();
         if (prop === "FolderFlag" && onlyFavorites) {
           if ((oldValue ^ newValue) & Ci.nsMsgFolderFlags.Favorite)
+log.debug("onMsgCountChange 2");
             firetray.Messaging.updateMsgCountWithCb();
         } else if (prop === "TotalUnreadMessages" &&
                    msgCountType === FIRETRAY_MESSAGE_COUNT_TYPE_UNREAD) {
+log.debug("onMsgCountChange 3");
           firetray.Messaging.updateMsgCountWithCb();
         } else if (prop === "NewMessages" &&
                    msgCountType === FIRETRAY_MESSAGE_COUNT_TYPE_NEW) {
           if (oldValue === true && newValue === false)
             item.setNumNewMessages(0); // https://bugzilla.mozilla.org/show_bug.cgi?id=727460
+log.debug("onMsgCountChange 4");
           firetray.Messaging.updateMsgCountWithCb();
         }
       }
+      log.debug("onMsgCountChange done");
     }
   },
 

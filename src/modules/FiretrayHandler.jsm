@@ -25,7 +25,6 @@ let log = Logging.getLogger("firetray.Handler");
 
 var { firetray } = ChromeUtils.import("resource://firetray/"+Services.appinfo.OS.toLowerCase()+"/FiretrayStatusIcon.jsm");
 log.debug("FiretrayStatusIcon "+Services.appinfo.OS.toLowerCase()+" imported");
-log.info("useAppind="+firetray.StatusIcon.appindEnable());
 var { firetray } = ChromeUtils.import("resource://firetray/"+Services.appinfo.OS.toLowerCase()+"/FiretrayWindow.jsm");
 log.debug("FiretrayWindow "+Services.appinfo.OS.toLowerCase()+" imported");
 
@@ -49,8 +48,6 @@ firetray.Handler = {
   inMailApp: false,
   appHasChat: false,
   appStarted: false,
-  useAppind: firetray.StatusIcon.appindEnable(),
-  canAppind: firetray.StatusIcon.canAppind,
   windows: {},
   get windowsCount() {return Object.keys(this.windows).length;},
   get visibleWindowsCount() {
@@ -251,6 +248,7 @@ firetray.Handler = {
   },
 
   startupDone: function() {
+    log.debug("startupDone");
     firetray.Handler.timers['startup-done'] =
       firetray.Utils.timer(FIRETRAY_DELAY_STARTUP_MILLISECONDS,
         Ci.nsITimer.TYPE_ONE_SHOT, function() {
@@ -261,6 +259,7 @@ firetray.Handler = {
             firetray.Messaging.addPrefObserver();
           }
         });
+    log.debug("startupDone done");
   },
 
   observe: function(subject, topic, data) {
@@ -279,9 +278,12 @@ firetray.Handler = {
       log.debug(topic+": "+subject+","+data);
       if (firetray.Handler.restoredWindowsCount &&
           !--firetray.Handler.restoredWindowsCount) {
+        log.debug("mail-startup-done 1");
         firetray.Utils.removeObservers(firetray.Handler, [ topic ]);
+        log.debug("mail-startup-done 2");
         firetray.Handler.startupDone();
       }
+      log.debug("mail-startup-done done");
       break;
 
     case "xpcom-will-shutdown":
@@ -606,6 +608,8 @@ firetray.Handler = {
   
 }; // firetray.Handler
 
+firetray.Handler.useAppind = firetray.StatusIcon.appindEnable(),
+firetray.Handler.canAppind = firetray.StatusIcon.canAppind(),
 
 // FIXME: since prefs can also be changed from config editor, we need to
 // 1. observe *all* firetray prefs, and 2. change options' UI accordingly !
