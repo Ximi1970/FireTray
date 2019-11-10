@@ -3,8 +3,8 @@
 /* for now, logging facilities (imported from logging.jsm) and Services are
    automatically provided by this module */
 var EXPORTED_SYMBOLS =
-  [ "firetray", "FIRETRAY_VERSION", "FIRETRAY_OS_SUPPORT", "FIRETRAY_ID",
-    "FIRETRAY_PREF_BRANCH", "FIRETRAY_SPLASH_PAGE",
+  [ "firetray", "FIRETRAY_OS_SUPPORT", "FIRETRAY_ID",
+    "FIRETRAY_PREF_BRANCH",
     "FIRETRAY_APPLICATION_ICON_TYPE_THEMED",
     "FIRETRAY_APPLICATION_ICON_TYPE_CUSTOM",
     "FIRETRAY_MIDDLE_CLICK_ACTIVATE_LAST", "FIRETRAY_MIDDLE_CLICK_SHOW_HIDE",
@@ -23,11 +23,9 @@ const Ci = Components.interfaces;
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 
-const FIRETRAY_VERSION     = "1.0.0pre1"; // needed for sync call of onVersionChange() :(
 const FIRETRAY_OS_SUPPORT  = ['freebsd', 'linux', 'winnt']; // install.rdf sync :(
 const FIRETRAY_ID          = "{9533f794-00b4-4354-aa15-c2bbda6989f8}";
 const FIRETRAY_PREF_BRANCH = "extensions.firetray.";
-const FIRETRAY_SPLASH_PAGE = "http://foudfou.github.com/FireTray/";
 
 const FIRETRAY_APPLICATION_ICON_TYPE_THEMED = 0;
 const FIRETRAY_APPLICATION_ICON_TYPE_CUSTOM = 1;

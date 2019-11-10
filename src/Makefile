@@ -136,7 +136,7 @@ xpi_includes := $(license) \
 build_includes := $(foreach f,$(xpi_includes),$(build_dir)/$(f))
 
 
-$(xpi_built): check_version check_loglevel $(build_dir) $(build_includes)
+$(xpi_built): check_loglevel $(build_dir) $(build_includes)
 	@echo "Creating XPI file."
 	@cd $(build_dir); $(ZIP) $(xpi_file) $(xpi_includes)
 	@echo "Creating XPI file. Done!"
@@ -190,12 +190,6 @@ $(profile_locations):
 clean_build:
 	@echo "Removing build dirs: $(build_dir)*"
 	@rm -rf $(build_dir)*
-
-VERSION_HARD_CODED := $(shell awk -F\" '/const[ \t]+FIRETRAY_VERSION/ \
-  {print $$2}' modules/commons.js)
-check_version:
-	@echo "checking version consistency"
-	@[ "$(VERSION)" = "$(VERSION_HARD_CODED)" ]
 
 FIRETRAY_LOG_LEVEL := $(shell awk -F\" '/const[ \t]+FIRETRAY_LOG_LEVEL/ \
   {print $$2}' modules/logging.jsm)
