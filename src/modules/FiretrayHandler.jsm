@@ -357,7 +357,7 @@ firetray.Handler = {
   },
 
   setIconTooltip: function(localizedMessage) {
-    firetray.StatusIcon.setIconTooltip(localizedMessage);
+    return firetray.StatusIcon.setIconTooltip(localizedMessage);
   },
   
   setIconText: function(text, color) {
@@ -384,10 +384,10 @@ firetray.Handler = {
     firetray.Window.dumpWindows();
   },
   registerWindow: function(win) {
-        firetray.Window.registerWindow(win);
+        return firetray.Window.registerWindow(win);
   },
   unregisterWindow: function(win) {
-        firetray.Window.unregisterWindow(win);
+        return firetray.Window.unregisterWindow(win);
   },
   hideWindow: function(winId) {
     firetray.Window.hideWindow(winId);
@@ -397,7 +397,7 @@ firetray.Handler = {
   },
   showAllWindowsAndActivate: firetray.Window.showAllWindowsAndActivate, // linux
   getActiveWindow: function() {
-    firetray.Window.getActiveWindow();
+    return firetray.Window.getActiveWindow();
   },
   windowGetAttention: function(winId) {
     firetray.Windows.windowGetAttention(winId);

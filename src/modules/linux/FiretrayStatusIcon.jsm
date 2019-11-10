@@ -234,7 +234,7 @@ firetray.StatusIcon = {
     if (firetray.Handler.useAppind) {
       firetray.AppIndicator.loadIcons();
     } else {
-      firetray.GtkStatusIcon.loadIcons();      
+      firetray.GtkStatusIcon.loadIcons();
     }
   },
 
@@ -244,7 +244,7 @@ firetray.StatusIcon = {
     if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconImageDefault();
     } else {
-      firetray.GtkStatusIcon.setIconImageDefault();      
+      firetray.GtkStatusIcon.setIconImageDefault();
     }
   },
 
@@ -252,7 +252,7 @@ firetray.StatusIcon = {
     if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconImageBlank();
     } else {
-      firetray.GtkStatusIcon.setIconImageBlank();      
+      firetray.GtkStatusIcon.setIconImageBlank();
     }
   },
 
@@ -260,7 +260,7 @@ firetray.StatusIcon = {
     if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconImageNewMail();
     } else {
-      firetray.GtkStatusIcon.setIconImageNewMail();      
+      firetray.GtkStatusIcon.setIconImageNewMail();
     }
   },
 
@@ -268,7 +268,7 @@ firetray.StatusIcon = {
     if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconImageCustom(prefname);
     } else {
-      firetray.GtkStatusIcon.setIconImageCustom(prefname);      
+      firetray.GtkStatusIcon.setIconImageCustom(prefname);
     }
   },
 
@@ -280,17 +280,9 @@ firetray.StatusIcon = {
 
   setIconTooltip: function(toolTipStr) {
     if (firetray.Handler.useAppind) {
-      firetray.AppIndicator.setIconTooltip(toolTipStr);
+      return firetray.AppIndicator.setIconTooltip(toolTipStr);
     } else {
-      firetray.GtkStatusIcon.setIconTooltip(toolTipStr);      
-    }    
-  },
-
-  setIconTooltip: function(toolTipStr) {
-    if (firetray.Handler.useAppind) {
-      firetray.AppIndicator.setIconTooltip(toolTipStr);
-    } else {
-      firetray.GtkStatusIcon.setIconTooltip(toolTipStr);      
+      return firetray.GtkStatusIcon.setIconTooltip(toolTipStr);
     }    
   },
 
@@ -298,15 +290,15 @@ firetray.StatusIcon = {
     if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconText(text, color);
     } else {
-      firetray.GtkStatusIcon.setIconText(text, color);      
+      firetray.GtkStatusIcon.setIconText(text, color);
     }    
   },
 
   setIconVisibility: function(visible) {
     if (firetray.Handler.useAppind) {
-      firetray.AppIndicator.setIconVisibility(visible);
+      return firetray.AppIndicator.setIconVisibility(visible);
     } else {
-      firetray.GtkStatusIcon.setIconVisibility(visible);      
+      return firetray.GtkStatusIcon.setIconVisibility(visible);
     }    
   },
 
