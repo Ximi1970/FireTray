@@ -18,105 +18,13 @@ var { libc } = ChromeUtils.import("resource://firetray/ctypes/linux/libc.jsm");
 var { x11 } = ChromeUtils.import("resource://firetray/ctypes/linux/x11.jsm");
 var { appind } = ChromeUtils.import("resource://firetray/ctypes/linux/"+FIRETRAY_GTK+"/appindicator.jsm");
 //MR firetray.Handler.subscribeLibsForClosing([gdk, gio, glib, gobject]);
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayAppIndicator.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayGtkStatusIcon.jsm");
+var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayPopupMenu.jsm");
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.StatusIcon");
 
-const getDesktop = function() {
-  let env = Cc["@mozilla.org/process/environment;1"]
-        .createInstance(Ci.nsIEnvironment);
-  let XDG_CURRENT_DESKTOP = env.get("XDG_CURRENT_DESKTOP").toLowerCase();
-  let DESKTOP_SESSION = env.get("DESKTOP_SESSION").toLowerCase();
-
-  let desktop = {name:'unknown', ver:null};
-  if (XDG_CURRENT_DESKTOP === 'unity' || DESKTOP_SESSION === 'ubuntu') {
-    desktop.name = 'unity';
-  }
-  // can't test DESKTOP_SESSION for kde: kde-plasma, plasme, kf5, ...
-  else if (XDG_CURRENT_DESKTOP === 'kde') {
-    desktop.name = 'kde';
-    let KDE_SESSION_VERSION = env.get("KDE_SESSION_VERSION");
-    if (KDE_SESSION_VERSION)
-      desktop.ver = parseInt(KDE_SESSION_VERSION, 10);
-  }
-  else if (DESKTOP_SESSION) {
-    desktop.name = DESKTOP_SESSION;
-  }
-  else if (XDG_CURRENT_DESKTOP) {
-    desktop.name = XDG_CURRENT_DESKTOP;
-  }
-
-  return desktop;
-};
-
-const dbusNotificationWatcherReady = function() {
-  let watcherReady = false;
-
-  function error(e) {
-    if (!e.isNull()) {
-      log.error(e.contents.message);
-      glib.g_error_free(e);
-    }
-  }
-
-  let conn = new gio.GDBusConnection.ptr;
-  let err = new glib.GError.ptr(null);
-  conn = gio.g_bus_get_sync(gio.G_BUS_TYPE_SESSION, null, err.address());
-  if (error(err)) return watcherReady;
-
-  if (!conn.isNull()) {
-    let flags = gio.G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
-          gio.G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
-          gio.G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS;
-
-    let proxy = gio.g_dbus_proxy_new_for_bus_sync(
-      gio.G_BUS_TYPE_SESSION,
-      flags,
-      null, /* GDBusInterfaceInfo */
-      appind.NOTIFICATION_WATCHER_DBUS_ADDR,
-      appind.NOTIFICATION_WATCHER_DBUS_OBJ,
-      appind.NOTIFICATION_WATCHER_DBUS_IFACE,
-      null, /* GCancellable */
-      err.address());
-    if (error(err)) return watcherReady;
-
-    if (!proxy.isNull()) {
-      let owner = gio.g_dbus_proxy_get_name_owner(proxy);
-      if (!owner.isNull()) {
-        watcherReady = true;
-      }
-      gobject.g_object_unref(proxy);
-    }
-
-    gobject.g_object_unref(conn);
-  }
-
-  return watcherReady;
-};
-
-const canAppind = (appind.available() && dbusNotificationWatcherReady());
-
-const appindEnable = function() {
-  let desktop = getDesktop();
-  log.info("desktop="+JSON.stringify(desktop));
-  let isAppindDesktop = (desktop.name === 'unity' ||
-                          (desktop.name === 'kde' && desktop.ver > 4));
-  if (isAppindDesktop && !appind.available()) {
-    log.error("Missing libappindicator for "+firetray.Handler.app.widgetTk);
-    return false;
-  }
-
-  return (firetray.Utils.prefService.getBoolPref('with_appindicator') &&
-          canAppind && isAppindDesktop);
-};
-  
-if (appindEnable()) {
-  var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayAppIndicator.jsm");
-} else {
-  var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayGtkStatusIcon.jsm");
-}
-
-var { firetray } = ChromeUtils.import("resource://firetray/linux/FiretrayPopupMenu.jsm");
 
 firetray.StatusIcon = {
   initialized: false,
@@ -125,11 +33,99 @@ firetray.StatusIcon = {
   prefNewMailIconNames: null,
   defaultAppIconName: null,
   defaultNewMailIconName: null,
-  canAppind: canAppind,
-  appindEnable: appindEnable(),
+  
+  getDesktop: function() {
+    let env = Cc["@mozilla.org/process/environment;1"]
+          .createInstance(Ci.nsIEnvironment);
+    let XDG_CURRENT_DESKTOP = env.get("XDG_CURRENT_DESKTOP").toLowerCase();
+    let DESKTOP_SESSION = env.get("DESKTOP_SESSION").toLowerCase();
 
+    let desktop = {name:'unknown', ver:null};
+    if (XDG_CURRENT_DESKTOP === 'unity' || DESKTOP_SESSION === 'ubuntu') {
+      desktop.name = 'unity';
+    }
+    // can't test DESKTOP_SESSION for kde: kde-plasma, plasme, kf5, ...
+    else if (XDG_CURRENT_DESKTOP === 'kde') {
+      desktop.name = 'kde';
+      let KDE_SESSION_VERSION = env.get("KDE_SESSION_VERSION");
+      if (KDE_SESSION_VERSION)
+        desktop.ver = parseInt(KDE_SESSION_VERSION, 10);
+    }
+    else if (DESKTOP_SESSION) {
+      desktop.name = DESKTOP_SESSION;
+    }
+    else if (XDG_CURRENT_DESKTOP) {
+      desktop.name = XDG_CURRENT_DESKTOP;
+    }
+
+    return desktop;
+  },
+  
+  canAppind: function() {
+    return (appind.available() && this.dbusNotificationWatcherReady());
+  },
+
+  dbusNotificationWatcherReady: function() {
+    let watcherReady = false;
+
+    function error(e) {
+      if (!e.isNull()) {
+        log.error(e.contents.message);
+        glib.g_error_free(e);
+      }
+    }
+
+    let conn = new gio.GDBusConnection.ptr;
+    let err = new glib.GError.ptr(null);
+    conn = gio.g_bus_get_sync(gio.G_BUS_TYPE_SESSION, null, err.address());
+    if (error(err)) return watcherReady;
+
+    if (!conn.isNull()) {
+      let flags = gio.G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
+            gio.G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
+            gio.G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS;
+
+      let proxy = gio.g_dbus_proxy_new_for_bus_sync(
+        gio.G_BUS_TYPE_SESSION,
+        flags,
+        null, /* GDBusInterfaceInfo */
+        appind.NOTIFICATION_WATCHER_DBUS_ADDR,
+        appind.NOTIFICATION_WATCHER_DBUS_OBJ,
+        appind.NOTIFICATION_WATCHER_DBUS_IFACE,
+        null, /* GCancellable */
+        err.address());
+      if (error(err)) return watcherReady;
+
+      if (!proxy.isNull()) {
+        let owner = gio.g_dbus_proxy_get_name_owner(proxy);
+        if (!owner.isNull()) {
+          watcherReady = true;
+        }
+        gobject.g_object_unref(proxy);
+      }
+
+      gobject.g_object_unref(conn);
+    }
+
+    return watcherReady;
+  },
+
+  appindEnable: function() {
+    let desktop = this.getDesktop();
+    log.info("desktop="+JSON.stringify(desktop));
+    let isAppindDesktop = (desktop.name === 'unity' ||
+                            (desktop.name === 'kde' && desktop.ver > 4));
+    if (isAppindDesktop && !appind.available()) {
+      log.error("Missing libappindicator for "+firetray.Handler.app.widgetTk);
+      return false;
+    }
+
+    return (firetray.Utils.prefService.getBoolPref('with_appindicator') &&
+            this.canAppind() && isAppindDesktop);
+  },
+  
   initImpl: function() {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       return firetray.AppIndicator.init();
     } else {
       return firetray.GtkStatusIcon.init();
@@ -137,7 +133,7 @@ firetray.StatusIcon = {
   },
   
   shutdownImpl: function() {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       firetray.AppIndicator.shutdown();
     } else {
       firetray.GtkStatusIcon.shutdown();
@@ -235,7 +231,7 @@ firetray.StatusIcon = {
   // Interface
 
   loadIcons: function() {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       firetray.AppIndicator.loadIcons();
     } else {
       firetray.GtkStatusIcon.loadIcons();      
@@ -245,7 +241,7 @@ firetray.StatusIcon = {
   loadImageCustom:  function(prefname) {},
 
   setIconImageDefault: function() {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconImageDefault();
     } else {
       firetray.GtkStatusIcon.setIconImageDefault();      
@@ -253,7 +249,7 @@ firetray.StatusIcon = {
   },
 
   setIconImageBlank: function() {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconImageBlank();
     } else {
       firetray.GtkStatusIcon.setIconImageBlank();      
@@ -261,7 +257,7 @@ firetray.StatusIcon = {
   },
 
   setIconImageNewMail: function() {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconImageNewMail();
     } else {
       firetray.GtkStatusIcon.setIconImageNewMail();      
@@ -269,7 +265,7 @@ firetray.StatusIcon = {
   },
 
   setIconImageCustom: function(prefname) {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconImageCustom(prefname);
     } else {
       firetray.GtkStatusIcon.setIconImageCustom(prefname);      
@@ -283,7 +279,7 @@ firetray.StatusIcon = {
   },
 
   setIconTooltip: function(toolTipStr) {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconTooltip(toolTipStr);
     } else {
       firetray.GtkStatusIcon.setIconTooltip(toolTipStr);      
@@ -291,7 +287,7 @@ firetray.StatusIcon = {
   },
 
   setIconTooltip: function(toolTipStr) {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconTooltip(toolTipStr);
     } else {
       firetray.GtkStatusIcon.setIconTooltip(toolTipStr);      
@@ -299,7 +295,7 @@ firetray.StatusIcon = {
   },
 
   setIconText: function(text, color) {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconText(text, color);
     } else {
       firetray.GtkStatusIcon.setIconText(text, color);      
@@ -307,7 +303,7 @@ firetray.StatusIcon = {
   },
 
   setIconVisibility: function(visible) {
-    if (this.appindEnable) {
+    if (firetray.Handler.useAppind) {
       firetray.AppIndicator.setIconVisibility(visible);
     } else {
       firetray.GtkStatusIcon.setIconVisibility(visible);      
