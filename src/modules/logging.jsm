@@ -1,5 +1,7 @@
 /* -*- Mode: js2; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 
+var { Log } = ChromeUtils.import("resource://gre/modules/Log.jsm");
+
 var EXPORTED_SYMBOLS = [ "Logging" ];
 
 const FIRETRAY_LOG_LEVEL = "Debug";
@@ -12,7 +14,6 @@ var Logging = {
   init: function() {
     if (this.initialized) return;
 
-    var { Log } = ChromeUtils.import("resource://gre/modules/Log.jsm");
     this.LogMod = Log
     
     this.setupLogging("firetray");

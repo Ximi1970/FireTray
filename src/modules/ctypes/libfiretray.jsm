@@ -6,6 +6,7 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
 
 var { Logging } = ChromeUtils.import("resource://firetray/logging.jsm");
 let log = Logging.getLogger("firetray.libfiretray");
@@ -38,8 +39,6 @@ var libfiretray = {
     log.info("__URI__1="+this.__URI__);
     log.info("__URI__2="+this.global.__URI__);
 
-    // If ctypes doesn't exist, try to get it
-    var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
     // If we still don't have ctypes, this isn't going to work...
     if (typeof(ctypes) == "undefined") {
       throw ("Could not load JS-Ctypes");
