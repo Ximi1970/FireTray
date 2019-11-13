@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://firetray/skin/overlay.css" type="text/css"?>
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
 <?xml-stylesheet type="text/css" href="chrome://messenger/skin/preferences/preferences.css"?>
-<!DOCTYPE prefwindow SYSTEM "chrome://firetray/locale/options.dtd">
-<window id="firetray-preferences"
+<!DOCTYPE dialog SYSTEM "chrome://firetray/locale/options.dtd">
+
+<dialog id="firetray-preferences"
+            buttons="accept"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
             title="&prefwindow.title;" minwidth="360px">
-
-  <script type="application/javascript" src="chrome://firetray/content/options.js" />
 
   <broadcasterset>
     <broadcaster id="broadcaster-notification-disabled" disabled="false" />
@@ -360,5 +359,8 @@
   <script 
     src="chrome://firetray/content/preferences.js" 
     type="application/javascript"/>          
+  <script
+    src="chrome://firetray/content/options.js"
+    type="application/javascript"/>
 
-  </window>
+</dialog>
