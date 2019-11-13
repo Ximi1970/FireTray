@@ -100,9 +100,7 @@ firetray.Window.shutdown = function() {
  * @return a gtk.GtkWindow.ptr
  */
 firetray.Window.getGtkWindowFromChromeWindow = function(window) {
-  let baseWindow = window
-        .QueryInterface(Ci.nsIInterfaceRequestor)
-        .getInterface(Ci.nsIWebNavigation)
+  let baseWindow = window.getInterface(Ci.nsIWebNavigation)
         .QueryInterface(Ci.nsIBaseWindow);
 
   // Tag the base window

@@ -92,7 +92,7 @@ function startup(data, reason) {
   // Check if the window we want to modify is already open.
   let windows = Services.wm.getEnumerator("mail:3pane");
   while (windows.hasMoreElements()) {
-    let domWindow = windows.getNext().QueryInterface(Ci.nsIDOMWindow);
+    let domWindow = windows.getNext();
     WindowListener.loadIntoWindow(domWindow);
   }
 
@@ -109,7 +109,7 @@ function shutdown(data, reason) {
 
   let windows = Services.wm.getEnumerator("mail:3pane");
   while (windows.hasMoreElements()) {
-    let domWindow = windows.getNext().QueryInterface(Ci.nsIDOMWindow);
+    let domWindow = windows.getNext();
     WindowListener.unloadFromWindow(domWindow);
   }
 
@@ -140,9 +140,7 @@ var WindowListener = {
 
     setDefaultPrefs();
 
-//    var { firetrayChrome } =  ChromeUtils.import("chrome://firetray/content/overlay.clean.js");
     var { firetrayChrome } =  ChromeUtils.import("chrome://firetray/content/overlay.js");
-
 
     let status = firetrayChrome.onLoad(window);
 

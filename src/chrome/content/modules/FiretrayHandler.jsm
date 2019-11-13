@@ -471,11 +471,9 @@ firetray.Handler = {
     let winInterface;
     let winOut;
     try {                       // thx Neil Deakin !!
-      winInterface =  win.QueryInterface(Ci.nsIInterfaceRequestor)
-        .getInterface(Ci.nsIWebNavigation)
+        winInterface =  win.getInterface(Ci.nsIWebNavigation)
         .QueryInterface(Ci.nsIDocShellTreeItem)
-        .treeOwner
-        .QueryInterface(Ci.nsIInterfaceRequestor);
+        .treeOwner;
     } catch (ex) {
       // ignore no-interface exception
       log.error(ex);
