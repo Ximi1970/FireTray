@@ -68,6 +68,9 @@ license := LICENSE
 # The manifest.json file.
 manifest_json := manifest.json
 
+# The bootstrap.js file.
+bootstrap := bootstrap.js
+
 # Version fetched from manifest.json
 VERSION := $(shell awk -F '["]' '/"version"/{print $$4}' $(manifest_json))
 
@@ -103,7 +106,7 @@ chrome_sources := $(chrome_sources_js)								\
                $(wildcard $(chrome_source_root)/locale/*/*.properties)
 
 # The modules (JSM) dir.
-modules_dir := modules
+modules_dir := $(chrome_source_root)/content/modules
 
 # The sources for the module files.
 modules_sources := $(wildcard $(modules_dir)/*.js)			\
@@ -127,6 +130,7 @@ components_sources := $(wildcard $(components_dir)/*.js)
 xpi_includes := $(license) \
              $(chrome_manifest) \
              $(manifest_json) \
+             $(bootstrap) \
              $(preferences_dir)/prefs.js \
              $(chrome_sources) \
              $(modules_sources) \
@@ -192,7 +196,7 @@ clean_build:
 	@rm -rf $(build_dir)*
 
 FIRETRAY_LOG_LEVEL := $(shell awk -F\" '/const[ \t]+FIRETRAY_LOG_LEVEL/ \
-  {print $$2}' modules/logging.jsm)
+  {print $$2}' chrome/content/modules/logging.jsm)
 check_loglevel:
 	@echo "checking loglevel"
 #	@[ "Warn" = "$(FIRETRAY_LOG_LEVEL)" ]

@@ -5,7 +5,13 @@
   "version": "1.0.0pre1",
   "author": "Hua Luo, Francesco Solero, Foudil BRÉTEL, Maxime Rijnders",
   "homepage_url": "https://github.com/Ximi1970/firetray/",
-  "legacy": true,
+  "legacy": {
+    "type" : "bootstrap",
+    "options": {
+      "page": "chrome://firetray/content/options.xul",
+      "open_in_tab": false
+    }
+  },
   "applications": {
     "gecko": {
       "id": "{9533f794-00b4-4354-aa15-c2bbda6989f8}",

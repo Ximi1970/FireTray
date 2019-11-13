@@ -1,5 +1,5 @@
-content		firetray			chrome/content/
-skin		firetray	classic/1.0	chrome/skin/
+content		firetray	chrome/content/
+skin		  firetray  classic/1.0	  chrome/skin/
 locale		firetray	bg		chrome/locale/bg/
 locale		firetray	de-DE		chrome/locale/de-DE/
 locale		firetray	en-US		chrome/locale/en-US/
@@ -14,9 +14,3 @@ locale		firetray	sk-SK		chrome/locale/sk-SK/
 locale		firetray	uk-UA		chrome/locale/uk-UA/
 locale		firetray	zh-CN		chrome/locale/zh-CN/
 locale		firetray	zh-TW		chrome/locale/zh-TW/
-resource	firetray			modules/
-overlay	chrome://messenger/content/messenger.xul	chrome://firetray/content/overlay.xul
-
-component {a9c9cc52-4d6c-45c2-a73f-0be1bd60aaa6} components/firetray-clhandler.js
-contract @mozilla.org/commandlinehandler/general-startup;1?type=firetray {a9c9cc52-4d6c-45c2-a73f-0be1bd60aaa6}
-category command-line-handler m-firetray @mozilla.org/commandlinehandler/general-startup;1?type=firetray
