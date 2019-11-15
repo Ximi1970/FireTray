@@ -14,6 +14,11 @@ var { PrefListener } = ChromeUtils.import("chrome://firetray/content/modules/Pre
 var { Logging } = ChromeUtils.import("chrome://firetray/content/modules/logging.jsm");
 let log = Logging.getLogger("firetray.Handler");
 
+var { firetray } = ChromeUtils.import("chrome://firetray/content/modules/"+Services.appinfo.OS.toLowerCase()+"/FiretrayStatusIcon.jsm");
+log.debug("FiretrayStatusIcon "+Services.appinfo.OS.toLowerCase()+" imported");
+var { firetray } = ChromeUtils.import("chrome://firetray/content/modules/"+Services.appinfo.OS.toLowerCase()+"/FiretrayWindow.jsm");
+log.debug("FiretrayWindow "+Services.appinfo.OS.toLowerCase()+" imported");
+
 var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
 var { IOUtils } = ChromeUtils.import("resource:///modules/IOUtils.js");
 
@@ -33,8 +38,14 @@ firetray.Handler = {
   appHasChat: false,
   appStarted: false,
   windows: {},
-  windowsCount: 0,
-  visibleWindowsCount: 0,
+  get windowsCount() {return Object.keys(this.windows).length;},
+  get visibleWindowsCount() {
+    let count = 0;
+    for (let wid in firetray.Handler.windows) {
+      if (firetray.Handler.windows[wid].visible) count += 1;
+    }
+    return count;
+  },
   observedTopics: {},
   ctypesLibs: {},               // {"lib1": lib1, "lib2": lib2}
 
@@ -51,9 +62,6 @@ firetray.Handler = {
   
   init: function() {            // does creates icon
     log.debug("Init");
-
-    firetray.PrefListener.register(false);
-    firetray.MailChatPrefListener.register(false);
     
     firetray.PrefListener.register(false);
     firetray.MailChatPrefListener.register(false);
@@ -91,7 +99,10 @@ firetray.Handler = {
     log.info('inMailApp='+this.inMailApp+', inBrowserApp='+this.inBrowserApp+
       ', appHasChat='+this.appHasChat);
 
-    
+    firetray.Window.init();
+    firetray.StatusIcon.init();
+    firetray.Handler.showHideIcon();
+    log.debug('StatusIcon initialized');
     
     
 
