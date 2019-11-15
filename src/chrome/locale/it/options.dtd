@@ -1,0 +1,103 @@
+<!-- if you need multiline/carriage return, use a .properties -->
+<!ENTITY prefwindow.title "Preferenze di FireTray">
+<!ENTITY NOT_IMPLEMENTED_YET "Non ancora implementato">
+
+<!ENTITY windows_options "Finestre">
+<!ENTITY icon_options "Icona">
+<!ENTITY mail_options "Posta">
+<!ENTITY chat_options "Chat">
+
+<!ENTITY hides_on_close.label "Riduci a icona quando si chiude il programma">
+<!ENTITY hides_on_close.accesskey "C">
+<!ENTITY hides_on_minimize.label "Riduci a icona quando si riduce la finestra">
+<!ENTITY hides_on_minimize.accesskey "F">
+<!ENTITY hides_single_window.label "Nascondi finestre singole">
+<!ENTITY hides_single_window.tooltip "L'operazione ha effetto solo relativamente alla finestra su cui è eseguita">
+<!ENTITY hides_single_window.accesskey "N">
+<!ENTITY hides_last_only.label "Solo l'ultima finestra può essere nascosta">
+<!ENTITY hides_last_only.tooltip "Le altre finestre verranno chiuse (terminate)">
+<!ENTITY hides_last_only.accesskey "T">
+<!ENTITY start_hidden.label "Avvia il programma ridotto a icona">
+<!ENTITY start_hidden.accesskey "I">
+<!ENTITY show_activates.label "Rendi attive le finestre ripristinate">
+<!ENTITY show_activates.accesskey "A">
+<!ENTITY show_activates.tooltip "Le finestre ripristinate verranno portate in primo piano e rese attive">
+<!ENTITY remember_desktop.label "Ripristina ciascuna finestra sul desktop originale">
+<!ENTITY remember_desktop.accesskey "R">
+<!ENTITY use_appindicator_icon.label "Utilizzare un'icona di appindicatore">
+<!ENTITY use_appindicator_icon.accesskey "i">
+
+<!ENTITY show_icon_on_hide.label "Mostra l'icona solo se una finestra è nascosta">
+<!ENTITY show_icon_on_hide.accesskey "O">
+<!ENTITY app_icon_type "Icona dell'applicazione">
+<!ENTITY app_icon_themed.label "Predefinita">
+<!ENTITY app_icon_themed.accesskey "D">
+<!ENTITY app_icon_themed_name "Nome dell'icona">
+<!ENTITY icon_themed.tooltip "Nome dell'icona fornito dall'ambiente grafico">
+<!ENTITY app_icon_custom.label "Personalizzata">
+<!ENTITY app_icon_custom.accesskey "Z">
+<!ENTITY mouse_wheel_options "Opzioni rotella del mouse">
+<!ENTITY enable_mouse_scroll.label "Effetto della rotella del mouse sull'icona">
+<!ENTITY enable_mouse_scroll.accesskey "L">
+<!ENTITY up "↑">
+<!ENTITY down "↓">
+<!ENTITY hide "Nascondi">
+<!ENTITY restore "Ripristina">
+<!ENTITY middle_click.label "Azione pulsante centrale del mouse:">
+<!ENTITY middle_click.accesskey "R">
+<!ENTITY show_hide "Mostra/nascondi">
+<!ENTITY activate_last "Attiva l'ultima finestra">
+<!ENTITY mail_notification_enabled.label "Attiva notifiche e-mail">
+<!ENTITY mail_notification_enabled.accesskey "a">
+<!ENTITY message_count_type.label "Tipo di contatore messaggi:">
+<!ENTITY message_count_type.accesskey "m">
+<!ENTITY message_count_type_unread "Messaggi non letti">
+<!ENTITY message_count_type_new "Nuovi messaggi">
+<!ENTITY message_count_type_new.tooltip "Nuovi messaggi in una cartella dall'ultima visita">
+<!ENTITY mail_notification_type.label "Tipo di notifica e-mail">
+<!ENTITY mail_notification_type.tooltip "Talvolta chiamata anche 'Biff'">
+<!ENTITY mail_notification_unread_count.label "Visualizza il contatore dei nuovi messaggi">
+<!ENTITY mail_notification_unread_count.accesskey "U">
+<!ENTITY mail_notification_blank_icon.label "Visualizza icona vuota">
+<!ENTITY mail_notification_blank_icon.accesskey "b">
+<!ENTITY mail_notification_newmail_icon.label "Visualizza l'icona per i nuovi messaggi">
+<!ENTITY mail_notification_newmail_icon.accesskey "N">
+<!ENTITY mail_notification_mail_icon_custom.label "Visualizza icona personalizzata">
+<!ENTITY mail_notification_mail_icon_custom.accesskey "I">
+<!ENTITY icon_text_color "Colore del testo">
+<!ENTITY icon_text_color.accesskey "T">
+<!ENTITY choose "Scegli">
+<!ENTITY choose.accesskey "L">
+<!ENTITY unread_count_folder_exceptions.label "Includi cartelle speciali">
+<!ENTITY unread_count_folder_exceptions.tooltip "Includi cartelle speciali nel conteggio dei nuovi messaggi">
+<!ENTITY excluded_folders_list.tooltip "Usa CTRL + clic tasto sinistro per selezionare/deselezionare le cartelle da considerare per il conteggio dei messaggi non letti">
+<!ENTITY unread_count_account_exceptions.label "Includi account">
+<!ENTITY unread_count_account_exceptions.tooltip "Account da considerare per il conteggio dei messaggi non letti">
+<!ENTITY folder_count_recursive.label "Includi sottocartelle">
+<!ENTITY folder_count_recursive.accesskey "S">
+<!ENTITY only_favorite_folders.label "Solo cartelle preferite">
+<!ENTITY only_favorite_folders.accesskey "F">
+<!ENTITY only_favorite_folders.tooltip "Dei tipi di cartelle e degli account selezionati, solo le cartelle preferite sono da considerare per il conteggio dei messaggi non letti">
+<!ENTITY account_or_server_type_name "Account">
+<!ENTITY account_or_server_type_name.tooltip "Nome o tipo di account">
+<!ENTITY account_or_server_type_excluded "Incluso">
+<!ENTITY account_or_server_type_excluded.tooltip "Considera account o tipi di account per il conteggio dei messaggi non letti">
+<!ENTITY account_or_server_type_order "Ordine">
+<!ENTITY account_or_server_type_order.tooltip "Ordine in cui visualizzare i tipi di server di posta. Fare doppio clic per modificare.">
+<!ENTITY mail_change_trigger.label "Lancia su incremento contatore:">
+<!ENTITY mail_change_trigger.accesskey "L">
+<!ENTITY mail_change_trigger.placeholder "/bin/notify-send">
+<!ENTITY mail_change_trigger.tooltip "Percorso assoluto del programma da lanciare quando viene incrementato il contatore dei messaggi non letti. Il programma utilizzerà il contatore dei nuovi messaggi come primo argomento.">
+<!ENTITY mail_get_attention.label "La finestra attira attenzione su nuovi messaggi">
+<!ENTITY mail_get_attention.accesskey "g">
+<!ENTITY nomail_hides_icon.label "Nascondi icona quando non c'è posta">
+<!ENTITY nomail_hides_icon.accesskey "H">
+<!ENTITY chat_icon_enable.label "Attiva icona della chat">
+<!ENTITY chat_icon_enable.accesskey "E">
+<!ENTITY chat_icon_blink.label "Lampeggiamento dell'icona della chat per nuovi messaggi">
+<!ENTITY chat_icon_blink.accesskey "C">
+<!ENTITY chat_icon_blink.tooltip "Quando c'è un messaggio privato o una citazione nel canale IRC">
+<!ENTITY chat_icon_blink_style.label "Stile lampeggiamento">
+<!ENTITY chat_icon_blink_style.accesskey "T">
+<!ENTITY chat_icon_blink_style_normal "Semplice">
+<!ENTITY chat_icon_blink_style_fade "Dissolvenza">

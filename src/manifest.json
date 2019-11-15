@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "FireTray",
+  "description": "A system tray extension.",
+  "version": "1.0.0pre1",
+  "author": "Hua Luo, Francesco Solero, Foudil BRÉTEL, Maxime Rijnders",
+  "homepage_url": "https://github.com/Ximi1970/firetray/",
+  "legacy": {
+    "type" : "bootstrap"
+  },
+  "applications": {
+    "gecko": {
+      "id": "{9533f794-00b4-4354-aa15-c2bbda6989f8}",
+      "strict_min_version": "68.0"
+    }
+  },
+  "icons": {
+    "48": "chrome/skin/icons/firetray48.png",
+    "64": "chrome/skin/icons/firetray64.png"
+  }
+}

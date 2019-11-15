@@ -1,0 +1,112 @@
+<!-- if you need multiline/carriage return, use a .properties -->
+<!ENTITY prefwindow.title "Ustawienia FireTray">
+
+<!ENTITY NOT_IMPLEMENTED_YET "JESZCZE NIE ZAIMPLEMENTOWANO">
+
+<!ENTITY windows_options "Okna">
+<!ENTITY icon_options "Ikona">
+<!ENTITY mail_options "Poczta">
+<!ENTITY chat_options "Chat">
+
+<!ENTITY hides_on_close.label "Zamknięcie okna chowa do zasobnika">
+<!ENTITY hides_on_close.accesskey "Z">
+<!ENTITY hides_on_minimize.label "Minimalizowanie okna chowa do zasobnika">
+<!ENTITY hides_on_minimize.accesskey "M">
+<!ENTITY hides_single_window.label "Ukrywaj okna osobno">
+<!ENTITY hides_single_window.tooltip "Nie wszystkie okna naraz.">
+<!ENTITY hides_single_window.accesskey "N">
+<!ENTITY hides_last_only.label "Tylko ostatnie okno może być schowane">
+<!ENTITY hides_last_only.tooltip "inne okna będą zamknięte">
+<!ENTITY hides_last_only.accesskey "T">
+<!ENTITY start_hidden.label "Uruchom aplikację ukrytą w zasobniku">
+<!ENTITY start_hidden.accesskey "U">
+<!ENTITY show_activates.label "Aktywuj przywrócone okna">
+<!ENTITY show_activates.accesskey "A">
+<!ENTITY show_activates.tooltip "Przywrócone okna wyłonią się na wierzch i będą aktywne.">
+<!ENTITY remember_desktop.label "Przywracaj okna na ich ówczesne pulpity">
+<!ENTITY remember_desktop.accesskey "P">
+<!ENTITY use_appindicator_icon.label "Use an appindicator icon">
+<!ENTITY use_appindicator_icon.accesskey "i">
+
+<!ENTITY show_icon_on_hide.label "Pokazuj ikonę w zasobniku tylko jeśli okno jest ukryte">
+<!ENTITY show_icon_on_hide.accesskey "o">
+<!ENTITY app_icon_type "Ikona aplikacji">
+<!ENTITY app_icon_themed.label "Domyślna motywu">
+<!ENTITY app_icon_themed.accesskey "D">
+<!ENTITY app_icon_themed_name "nazwa-ikony">
+<!ENTITY icon_themed.tooltip "Nazwy ikon dostarczone przez środowisko graficzne.">
+<!ENTITY app_icon_custom.label "Własna">
+<!ENTITY app_icon_custom.accesskey "a">
+
+<!ENTITY mouse_wheel_options "Opcje kółka myszy" >
+<!ENTITY enable_mouse_scroll.label "Użyj przewijania myszą na ikonie w zasobniku" >
+<!ENTITY enable_mouse_scroll.accesskey "j">
+<!ENTITY up "↑" >
+<!ENTITY down "↓" >
+<!ENTITY hide "ukrywa" >
+<!ENTITY restore "przywraca" >
+<!ENTITY middle_click.label "Mouse middle click action :" >
+<!ENTITY middle_click.accesskey "k" >
+<!ENTITY show_hide "Show/hide" >
+<!ENTITY activate_last "Activate last window" >
+
+<!ENTITY mail_notification_enabled.label "Włącz powiadomienie o poczcie">
+<!ENTITY mail_notification_enabled.accesskey "i">
+<!ENTITY message_count_type.label "zliczanie wiadomości :">
+<!ENTITY message_count_type.accesskey "c">
+<!ENTITY message_count_type_unread "nieprzeczytane">
+<!ENTITY message_count_type_new "nowe">
+<!ENTITY message_count_type_new.tooltip "Nowe wiadomości odkąd folder był ostatnio odwiedzony.">
+<!ENTITY mail_notification_type.label "Typ powiadomienia o wiadomościach">
+<!ENTITY mail_notification_type.tooltip "aka. Dymek">
+<!ENTITY mail_notification_unread_count.label "pokazuj ilość nowych wiadomośći">
+<!ENTITY mail_notification_unread_count.accesskey "l">
+<!ENTITY mail_notification_blank_icon.label "Pokaż pustą ikonę">
+<!ENTITY mail_notification_blank_icon.accesskey "b">
+<!ENTITY mail_notification_newmail_icon.label "pokazuj ikonę nowych wiadomości">
+<!ENTITY mail_notification_newmail_icon.accesskey "h">
+<!ENTITY mail_notification_mail_icon_custom.label "pokazuj własną ikonę">
+<!ENTITY mail_notification_mail_icon_custom.accesskey "k">
+<!ENTITY icon_text_color "Kolor tekstu">
+<!ENTITY icon_text_color.accesskey "K">
+<!ENTITY choose "Wybierz">
+<!ENTITY choose.accesskey "z">
+
+<!ENTITY unread_count_folder_exceptions.label "Uwzględnij specjalne foldery">
+<!ENTITY unread_count_folder_exceptions.tooltip "Foldery uwzględnione przy zliczania nieprzeczytanych wiadomości.">
+<!ENTITY excluded_folders_list.tooltip "Użyj CTRL + lewy klik aby zaznaczyć/odznaczyć foldery.">
+
+<!ENTITY unread_count_account_exceptions.label "Uwzględnione konta">
+<!ENTITY unread_count_account_exceptions.tooltip "Konta użytkownika uwzględnione przy zliczaniu nieprzeczytanych wiadomości.">
+<!ENTITY folder_count_recursive.label "Uwzględnij podfoldery">
+<!ENTITY folder_count_recursive.accesskey "g">
+<!ENTITY only_favorite_folders.label "Tylko ulubione foldery">
+<!ENTITY only_favorite_folders.accesskey "d">
+<!ENTITY only_favorite_folders.tooltip "Zliczaj tylko wiadomośći w ulubionych spośród uwzględnionych folderów i kont użytkownika.">
+
+<!ENTITY account_or_server_type_name "Konto">
+<!ENTITY account_or_server_type_name.tooltip "Nazwa lub typ konta.">
+<!ENTITY account_or_server_type_excluded "Uwzględnione">
+<!ENTITY account_or_server_type_excluded.tooltip "Uwzględnia te nazwy kont lub typy kont przy zliczaniu nieprzeczytanych wiadomośći.">
+<!ENTITY account_or_server_type_order "Kolejność">
+<!ENTITY account_or_server_type_order.tooltip "Kolejność w jakiej serwery poczty są wyświetlane. Kliknij dwukrotnie aby edytować.">
+
+<!ENTITY mail_change_trigger.label "Uruchom powiadomienie :">
+<!ENTITY mail_change_trigger.accesskey "m">
+<!ENTITY mail_change_trigger.placeholder "/bin/notify-send">
+<!ENTITY mail_change_trigger.tooltip "Absolutna ścieżka do programu, który uruchomić gdy licznik wiadomośći się zmieni. Ten program otrzyma ilość nowych wiadomośći jako pierwszy argument.">
+<!ENTITY mail_get_attention.label "Okno przyciąga uwagę przy nowej wiadomośći">
+<!ENTITY mail_get_attention.accesskey "y">
+<!ENTITY nomail_hides_icon.label "Hide icon when no mail">
+<!ENTITY nomail_hides_icon.accesskey "H">
+
+<!ENTITY chat_icon_enable.label "Włącz ikonę czatu">
+<!ENTITY chat_icon_enable.accesskey "u">
+<!ENTITY chat_icon_blink.label "Ikona czatu mryga przy nowych wiadomościach">
+<!ENTITY chat_icon_blink.accesskey "I">
+<!ENTITY chat_icon_blink.tooltip "Przy otrzymaniu prywatnej wiadomości lub wiadomości w kanale.">
+
+<!ENTITY chat_icon_blink_style.label "Styl mrygania">
+<!ENTITY chat_icon_blink_style.accesskey "S">
+<!ENTITY chat_icon_blink_style_normal "Pojedyńczy">
+<!ENTITY chat_icon_blink_style_fade "Zanikający">
