@@ -195,7 +195,7 @@ clean_build:
 	@rm -rf $(build_dir)*
 
 FIRETRAY_LOG_LEVEL := $(shell awk -F\" '/const[ \t]+FIRETRAY_LOG_LEVEL/ \
-  {print $$2}' chrome/modules/logging.jsm)
+  {print $$2}' chrome/content/modules/logging.jsm)
 check_loglevel:
 	@echo "checking loglevel"
 #	@[ "Warn" = "$(FIRETRAY_LOG_LEVEL)" ]
