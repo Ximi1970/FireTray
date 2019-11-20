@@ -143,6 +143,15 @@ firetray.Handler = {
     return true;
   },
 
+  isChatEnabled: function() {
+    return this.isChatProvided() &&
+      firetray.Utils.prefService.getBoolPref("chat_icon_enable");
+  },
+
+  isChatProvided: function() {
+    return this.appHasChat && Services.prefs.getBoolPref("mail.chat.enabled");
+  },
+
   readTBRestoreWindowsCount: function() {
     let sessionFile = Services.dirsvc.get("ProfD", Ci.nsIFile);
     sessionFile.append("session.json");
@@ -163,7 +172,7 @@ firetray.Handler = {
   // Interface Windows
 
   registerWindow: function(win) {
-        return 0;
+    return firetray.Window.registerWindow(win);
   },
   unregisterWindow: function(win) {
         return 0;
@@ -175,11 +184,37 @@ firetray.Handler = {
   },
   onMinimize: function(wid) {
     log.debug("onMinimize");
+    return true;
   },
   
   showHideIcon: function(msgCount) {
   },
   
+  /** nsIBaseWindow, nsIXULWindow, ... */
+  getWindowInterface: function(win, iface) {
+    let winInterface;
+    let winOut;
+    try {                       // thx Neil Deakin !!
+        winInterface =  win.getInterface(Ci.nsIWebNavigation)
+        .QueryInterface(Ci.nsIDocShellTreeItem)
+        .treeOwner;
+    } catch (ex) {
+      // ignore no-interface exception
+      log.error(ex);
+      return null;
+    }
+
+    if (iface == "nsIBaseWindow")
+      winOut = winInterface[iface];
+    else if (iface == "nsIXULWindow")
+      winOut = winInterface.getInterface(Ci.nsIXULWindow);
+    else {
+      log.error("unknown iface '" + iface + "'");
+      return null;
+    }
+
+    return winOut;
+  },
 
   prefsDisable: [
     {cond: function(){return firetray.Handler.inBrowserApp;},

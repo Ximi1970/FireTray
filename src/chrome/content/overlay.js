@@ -68,6 +68,11 @@ var firetrayChrome = { // each new window gets a new firetrayChrome !
     return true;
   },
 
+  onMinimize: function(event) {
+    firetray_log.debug('Firetray MINIMIZE');
+    return true;
+  },
+  
   /*
    * Minimize/Restore/Close buttons can be overlayed by titlebar (fake) buttons
    * which do not fire the events that we rely on (see Bug 827880). This is why
@@ -83,7 +88,8 @@ var firetrayChrome = { // each new window gets a new firetrayChrome !
 
   titlebarDispatch: {
     "titlebar-min": function() {
-      return firetray.Handler.onMinimize(firetrayChrome.winId);
+      return firetrayChrome.onMinimize(firetrayChrome.winId);
+//      return firetray.Handler.onMinimize(firetrayChrome.winId);
     },
     "titlebar-close": function() {
       return firetrayChrome.onClose(null);

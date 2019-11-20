@@ -1,7 +1,3 @@
-/* -*- Mode: js2; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-
-/* for now, logging facilities (imported from logging.jsm) and Services are
-   automatically provided by this module */
 var EXPORTED_SYMBOLS =
   [ "firetray", "FIRETRAY_OS_SUPPORT", "FIRETRAY_ID",
     "FIRETRAY_PREF_BRANCH",
