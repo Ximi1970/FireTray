@@ -14,6 +14,7 @@ var { PrefListener } = ChromeUtils.import("chrome://firetray/content/modules/Pre
 var { Logging } = ChromeUtils.import("chrome://firetray/content/modules/logging.jsm");
 let log = Logging.getLogger("firetray.Handler");
 
+var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 var { firetray } = ChromeUtils.import("chrome://firetray/content/modules/"+Services.appinfo.OS.toLowerCase()+"/FiretrayStatusIcon.jsm");
 log.debug("FiretrayStatusIcon "+Services.appinfo.OS.toLowerCase()+" imported");
 var { firetray } = ChromeUtils.import("chrome://firetray/content/modules/"+Services.appinfo.OS.toLowerCase()+"/FiretrayWindow.jsm");

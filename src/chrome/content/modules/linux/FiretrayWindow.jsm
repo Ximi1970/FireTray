@@ -42,17 +42,29 @@ var gobject = {};
 gobject.gobject = ctypes.open("libgobject-2.0.so.0");
 
 gobject.gpointer = ctypes.voidptr_t;
+gobject.gboolean = ctypes.int;
 gobject.gchar = ctypes.char;
 gobject.gint = ctypes.int;
 gobject.guint = ctypes.unsigned_int;
+gobject.gulong = ctypes.unsigned_long;
+gobject.gint8 = ctypes.int8_t;
+gobject.gint16 = ctypes.int16_t;
+gobject.GCallback = ctypes.voidptr_t;
+gobject.GClosureNotify = ctypes.voidptr_t;
 gobject.GFunc = ctypes.void_t.ptr;
 gobject.GList = ctypes.StructType("GList");
+gobject.GConnectFlags = ctypes.unsigned_int;
 gobject.GFunc_t = ctypes.FunctionType(ctypes.default_abi, ctypes.void_t, [gobject.gpointer, gobject.gpointer]).ptr;
 
 gobject.g_list_foreach = gobject.gobject.declare("g_list_foreach", ctypes.default_abi, ctypes.void_t, gobject.GList.ptr, gobject.GFunc, gobject.gpointer);
 
 gobject.g_list_free = gobject.gobject.declare("g_list_free", ctypes.default_abi, ctypes.void_t, gobject.GList.ptr);
 
+gobject.g_signal_connect_data = gobject.gobject.declare("g_signal_connect_data", ctypes.default_abi, gobject.gulong, gobject.gpointer, gobject.gchar.ptr, gobject.GCallback, gobject.gpointer, gobject.GClosureNotify, gobject.GConnectFlags);
+
+gobject.g_signal_connect = function(instance, detailed_signal, handler, data) {
+  return this.g_signal_connect_data(instance, detailed_signal, handler, data, null, 0);
+};
 
 
 var gdk = {};
@@ -61,10 +73,28 @@ gdk.gdk = ctypes.open("libgdk-3.so.0");
 
 gdk.GdkWindow = ctypes.StructType("GdkWindow");
 
+gdk.GDK_FILTER_CONTINUE  = 0;
+
+gdk.GdkEventType = ctypes.int;
+
+gdk.GdkFilterReturn = ctypes.int;
+gdk.GdkXEvent = ctypes.void_t;
+gdk.GdkEvent = ctypes.void_t;
+gdk.GdkFilterFunc = ctypes.voidptr_t;
+gdk.GdkFilterFunc_t = ctypes.FunctionType(ctypes.default_abi, gdk.GdkFilterReturn,
+  [gdk.GdkXEvent.ptr, gdk.GdkEvent.ptr, gobject.gpointer]).ptr;
+
+gdk.GdkEventFocus = ctypes.StructType("GdkEventFocus", [
+  { "type": gdk.GdkEventType },
+  { "window": gdk.GdkWindow.ptr },
+  { "send_event": gobject.gint8 },
+  { "in": gobject.gint16 },
+]);
+
 gdk.gdk_window_get_toplevel = gdk.gdk.declare("gdk_window_get_toplevel", ctypes.default_abi, gdk.GdkWindow.ptr, gdk.GdkWindow.ptr);
 gdk.gdk_window_get_user_data = gdk.gdk.declare("gdk_window_get_user_data", ctypes.default_abi, ctypes.void_t, gdk.GdkWindow.ptr, gobject.gpointer.ptr);
 gdk.gdk_x11_window_get_xid = gdk.gdk.declare("gdk_x11_window_get_xid", ctypes.default_abi, x11.XID, gdk.GdkWindow.ptr);
-
+gdk.gdk_window_add_filter = gdk.gdk.declare("gdk_window_add_filter", ctypes.default_abi, ctypes.void_t, gdk.GdkWindow.ptr, gdk.GdkFilterFunc, gobject.gpointer);
 
 
 
@@ -95,11 +125,86 @@ gtk.GtkWidget.define([
   { "parent": gtk.GtkWidget.ptr }
 ]);
 
+gtk.GCallbackWidgetFocusEvent_t = ctypes.FunctionType(ctypes.default_abi, gobject.gboolean,
+  [gtk.GtkWidget.ptr, gdk.GdkEventFocus.ptr, gobject.gpointer]).ptr;
+
 gtk.gtk_check_version = gtk.gtk.declare("gtk_check_version", ctypes.default_abi, gobject.gchar.ptr, gobject.guint, gobject.guint, gobject.guint); 
 gtk.gtk_window_list_toplevels = gtk.gtk.declare("gtk_window_list_toplevels", ctypes.default_abi, gobject.GList.ptr);
 gtk.gtk_window_get_title = gtk.gtk.declare("gtk_window_get_title", ctypes.default_abi, gobject.gchar.ptr, gtk.GtkWindow.ptr);
 gtk.gtk_widget_get_window = gtk.gtk.declare("gtk_widget_get_window", ctypes.default_abi, gdk.GdkWindow.ptr, gtk.GtkWidget.ptr);
 
+
+
+
+
+const FIRETRAY_WINDOW_COUNT_MAX = 64;
+
+/**
+ * basic Hash mapping a key (of any type) to a cell in a ctypes array
+ */
+function ctypesMap(t) {
+  this.array = ctypes.ArrayType(t)(FIRETRAY_WINDOW_COUNT_MAX);
+  this.indexLast = -1;
+  this.freedCells = [];         // indices of freed cells
+  this.count = 0;               // count of actually stored things
+  this.map = {};                // map key -> index
+};
+
+ctypesMap.prototype.get = function(key) {
+  if (!this.map.hasOwnProperty(key))
+      throw new RangeError('Unknown key: '+key);
+
+  return this.array[this.map[key]];
+};
+
+Object.defineProperties(ctypesMap.prototype, {
+  "keys": {get: function(){return Object.keys(this.map);} }
+});
+
+ctypesMap.prototype.insert = function(key, item) {
+  if (this.map.hasOwnProperty(key)) {
+    log.debug("REPLACE");
+    this.array[this.map[key]] = item;
+
+  } else if (this.freedCells.length) {
+    log.debug("USE FREE CELL");
+    let idx = this.freedCells.shift();
+    this.array[idx] = item;
+    this.map[key] = idx;
+    this.count += 1;
+
+  } else {
+    let indexNext = this.indexLast + 1;
+    if (indexNext >= FIRETRAY_WINDOW_COUNT_MAX)
+      throw new RangeError('Array overflow');
+
+    this.indexLast = indexNext;
+    this.array[this.indexLast] = item;
+    this.map[key] = this.indexLast;
+    this.count += 1;
+  }
+};
+
+ctypesMap.prototype.remove = function(key) {
+  if (!this.map.hasOwnProperty(key))
+      throw new RangeError('Unknown key: '+key);
+  log.debug("FREE CELL");
+
+  let idx = this.map[key];
+  if (!delete this.map[key])
+    throw new DeleteError();
+  this.freedCells.unshift(idx);
+  this.count -= 1;
+};
+
+
+// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Custom_Error_Types
+function DeleteError(message) {
+  this.name = "DeleteError";
+  this.message = message || "Could not delete object memeber";
+}
+DeleteError.prototype = new Error();
+DeleteError.prototype.constructor = DeleteError;
 
 
 
@@ -120,6 +225,14 @@ var _find_data_t = ctypes.StructType("_find_data_t", [
 
 firetray.Window = new FiretrayWindow();
 firetray.Window.signals = {'focus-in': {callback: {}, handler: {}}};
+
+// NOTE: storing ctypes pointers into a JS object doesn't work: pointers are
+// "evolving" after a while (maybe due to back and forth conversion). So we
+// need to store them into a real ctypes array !
+firetray.Window.gtkWindows              = new ctypesMap(gtk.GtkWindow.ptr);
+firetray.Window.gdkWindows              = new ctypesMap(gdk.GdkWindow.ptr);
+//firetray.Window.gtkPopupMenuWindowItems = new ctypesMap(gtk.GtkImageMenuItem.ptr);
+
 
 firetray.Window.init = function() {
   log.debug("Init");
@@ -263,6 +376,38 @@ firetray.Window.getWindowsFromChromeWindow = function(win) {
 
 
 
+firetray.Window.attachOnFocusInCallback = function(xid) {
+  log.debug("attachOnFocusInCallback xid="+xid);
+  let callback = gtk.GCallbackWidgetFocusEvent_t(
+    firetray.Window.onFocusIn, null, -1);
+  this.signals['focus-in'].callback[xid] = callback;
+  let handlerId = gobject.g_signal_connect(
+    firetray.Window.gtkWindows.get(xid), "focus-in-event", callback, null);
+  log.debug("focus-in handler="+handlerId);
+  this.signals['focus-in'].handler[xid] = handlerId;
+};
+
+
+
+// NOTE: fluxbox issues a FocusIn event when switching workspace
+// by hotkey, which means 2 FocusIn events when switching to a moz app :(
+// (http://sourceforge.net/tracker/index.php?func=detail&aid=3190205&group_id=35398&atid=413960)
+firetray.Window.onFocusIn = function(widget, event, data) {
+  log.debug("onFocusIn");
+  let xid = firetray.Window.getXIDFromGtkWidget(widget);
+  log.debug("xid="+xid);
+
+  let stopPropagation = false;
+  return stopPropagation;
+};
+
+
+
+
+firetray.Window.filterWindow = function(xev, gdkEv, data) {
+  return gdk.GDK_FILTER_CONTINUE;
+};
+
 
 ///////////////////////// firetray.Handler overriding /////////////////////////
 
@@ -276,6 +421,47 @@ firetray.Window.registerWindow = function(win) {
   firetray.Handler.windows[xid] = {};
   firetray.Handler.windows[xid].chromeWin = win;
   firetray.Handler.windows[xid].baseWin = baseWin;
+
+  firetray.Window.gtkWindows.insert(xid, gtkWin);
+  firetray.Window.gdkWindows.insert(xid, gdkWin);
+  
+    
+  
+  // crash (standard)
+/*
+  firetray.Handler.windows[xid].filterWindowCb = gdk.GdkFilterFunc_t(firetray.Window.filterWindow);;
+  gdk.gdk_window_add_filter(gdkWin, firetray.Handler.windows[xid].filterWindowCb, null);
+*/
+
+  // crash - one liner
+/*
+  var callback = ctypes.FunctionType(ctypes.default_abi, gdk.GdkFilterReturn,
+  [gdk.GdkXEvent.ptr, gdk.GdkEvent.ptr, gobject.gpointer]).ptr(function(xev, gdkEv, data) {return gdk.GDK_FILTER_CONTINUE;});
+  gdk.gdk_window_add_filter(gdkWin, callback, null);
+*/
+ 
+  // crash - long version
+/*  
+  var filterWindow = function(xev, gdkEv, data) {
+    return gdk.GDK_FILTER_CONTINUE;
+  };
+  var funcType = ctypes.FunctionType(ctypes.default_abi, gdk.GdkFilterReturn,
+  [gdk.GdkXEvent.ptr, gdk.GdkEvent.ptr, gobject.gpointer]);
+  var funcPtrType = funcType.ptr;
+  var regularFuncPtr = funcPtrType();
+  var callback = funcPtrType(filterWindow); 
+  gdk.gdk_window_add_filter(gdkWin, callback, null);
+*/
+
+
+
+
+
+  
+  // crash focus-in
+//  firetray.Window.attachOnFocusInCallback(xid);
+
+
 
   
   return xid;
