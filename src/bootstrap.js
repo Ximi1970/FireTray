@@ -134,6 +134,7 @@ var WindowListener = {
   loadIntoWindowAfterWindowIsReady(window) {
     console.log("load (2/2): " + window.document.readyState);    
     let document = window.document;
+    window.callbacks = {};
 
     // Take any steps to add UI or anything to the window
     // document.getElementById() etc. will work here.

@@ -425,11 +425,12 @@ firetray.Window.registerWindow = function(win) {
   firetray.Window.gtkWindows.insert(xid, gtkWin);
   firetray.Window.gdkWindows.insert(xid, gdkWin);
   
-    
+  
+   
   
   // crash (standard)
 /*
-  firetray.Handler.windows[xid].filterWindowCb = gdk.GdkFilterFunc_t(firetray.Window.filterWindow);;
+  firetray.Handler.windows[xid].filterWindowCb = gdk.GdkFilterFunc_t(firetray.Window.filterWindow);
   gdk.gdk_window_add_filter(gdkWin, firetray.Handler.windows[xid].filterWindowCb, null);
 */
 
@@ -454,6 +455,13 @@ firetray.Window.registerWindow = function(win) {
 */
 
 
+  // crash - global store
+/*
+  win.callbacks['filter'] = gdk.GdkFilterFunc_t(firetray.Window.filterWindow);
+  
+  firetray.Handler.windows[xid].filterWindowCb =  win.callbacks['filter'];
+  gdk.gdk_window_add_filter(gdkWin, win.callbacks['filter'], null);
+*/
 
 
 
