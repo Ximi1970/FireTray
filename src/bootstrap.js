@@ -198,7 +198,7 @@ var WindowListener = {
     log_test.debug("gdkw="+gdkw+" *gdkw="+addrPointedByInHex(gdkw));
     
     const callback = _GdkFilterFunc_t(filterWindow);
-//    _gdk_window_add_filter(gdkWin, callback, null);
+    _gdk_window_add_filter(gdkWin, callback, null);
 
     log_test.debug("Gdk filter test done");
         
