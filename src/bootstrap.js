@@ -149,15 +149,6 @@ var WindowListener = {
     log_test.warn("Warn test");
     log_test.error("Error test");
 
-    
-    setDefaultPrefs();
-
-    var { firetrayChrome } =  ChromeUtils.import("chrome://firetray/content/overlay.js");
-
-    let status = firetrayChrome.onLoad(window);
-
-    console.log("Status: " + status);    
-
   },
 
   unloadFromWindow(window) {
