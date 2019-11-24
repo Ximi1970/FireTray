@@ -1,5 +1,38 @@
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 
+
+const Ci = Components.interfaces;
+
+var { ctypes } = ChromeUtils.import("resource://gre/modules/ctypes.jsm");
+
+
+const _gdk = ctypes.open("libgdk-3.so.0");
+
+_gpointer = ctypes.voidptr_t;
+
+
+const _GdkWindow = ctypes.StructType("GdkWindow");
+const _GdkFilterFunc = ctypes.voidptr_t;
+const _GdkFilterReturn = ctypes.int;
+const _GdkXEvent = ctypes.void_t;
+const _GdkEvent = ctypes.void_t;
+
+const _GdkFilterFunc_t = ctypes.FunctionType(ctypes.default_abi, _GdkFilterReturn, [_GdkXEvent.ptr, _GdkEvent.ptr, _gpointer]).ptr;
+
+const _gdk_window_get_toplevel = _gdk.declare("gdk_window_get_toplevel", ctypes.default_abi, _GdkWindow.ptr, _GdkWindow.ptr);
+
+const _gdk_window_add_filter = _gdk.declare("gdk_window_add_filter", ctypes.default_abi, ctypes.void_t, _GdkWindow.ptr, _GdkFilterFunc, _gpointer);
+
+
+
+const filterWindow = function(xev, gdkEv, data) {
+  return gdk.GDK_FILTER_CONTINUE;
+};
+
+
+
+
+
 const PREF_BRANCH = "extensions.firetray.";
 const PREFS = {
   firstrun: true,
@@ -134,7 +167,6 @@ var WindowListener = {
   loadIntoWindowAfterWindowIsReady(window) {
     console.log("load (2/2): " + window.document.readyState);    
     let document = window.document;
-    window.callbacks = {};
 
     // Take any steps to add UI or anything to the window
     // document.getElementById() etc. will work here.
@@ -149,6 +181,27 @@ var WindowListener = {
     log_test.warn("Warn test");
     log_test.error("Error test");
 
+    log_test.debug("Gdk filter test");
+    
+    const addrPointedByInHex = function(ptr) {
+      return "0x"+ctypes.cast(ptr, ctypes.uintptr_t.ptr).contents.toString(16);
+    };
+    
+    let baseWin = window.getInterface(Ci.nsIWebNavigation).QueryInterface(Ci.nsIDocShellTreeItem).treeOwner['nsIBaseWindow'];
+    let nativeHandle = baseWin.nativeHandle;
+
+    log_test.debug("nativeHandle="+nativeHandle);
+
+    let gdkw = new _GdkWindow.ptr(ctypes.UInt64(nativeHandle));
+    gdkWin = _gdk_window_get_toplevel(gdkw);
+
+    log_test.debug("gdkw="+gdkw+" *gdkw="+addrPointedByInHex(gdkw));
+    
+    const callback = _GdkFilterFunc_t(filterWindow);
+//    _gdk_window_add_filter(gdkWin, callback, null);
+
+    log_test.debug("Gdk filter test done");
+        
   },
 
   unloadFromWindow(window) {
